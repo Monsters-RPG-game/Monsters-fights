@@ -1,0 +1,123 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    container:
+      image: node:18
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+
+      - name: Install dependencies
+        run: npm install
+
+  test:
+    runs-on: ubuntu-latest
+
+    container:
+      image: node:18
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+
+      - name: Download config
+        uses: actions/download-artifact@v2
+        with:
+          name: config
+          path: config/
+
+      - name: Run tests
+        run: apt-get update && apt-get install gdebi-core -y && wget http://ftp.us.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb && gdebi --non-interactive libssl1.1_1.1.1w-0+deb11u1_amd64.deb && yarn test:e2e && yarn test:unit && yarn test:db
+
+  lint:
+    runs-on: ubuntu-latest
+
+    container:
+      image: node:18
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+
+      - name: Download config
+        uses: actions/download-artifact@v2
+        with:
+          name: config
+          path: config/
+
+      - name: Lint
+        run: npm run lint
+
+  build:
+    needs: [test, lint]
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: node:18
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+
+      - name: Download config
+        uses: actions/download-artifact@v2
+        with:
+          name: config
+          path: config/
+
+      - name: Build
+        run: npm run build

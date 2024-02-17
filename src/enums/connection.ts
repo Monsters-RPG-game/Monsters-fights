@@ -14,3 +14,12 @@ export enum EMessageTypes {
   Send = 'send',
   Heartbeat = 'heartbeat',
 }
+
+export enum EMessageTargets {
+  Log = 'log',
+  User = 'user',
+  Party = 'party',
+  Profile = 'profile',
+  Inventory = 'inventory',
+  Fight = 'fight',
+}

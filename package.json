@@ -1,5 +1,5 @@
 {
-  "name": "monsters-fights",
+  "name": "fights",
   "version": "0.0.1",
   "description": "Fights",
   "productName": "Fights",
@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "cross-env NODE_ENV=prod node dist/main",
+    "start": "cross-env NODE_ENV=prod node build/src/main",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:debug": "cross-env NODE_ENV=dev nest start --debug --watch",
     "lint": "cross-env NODE_ENV=development eslint . --ext .ts --fix",
@@ -33,9 +33,12 @@
     "@nestjs/platform-express": "^10.0.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.3",
+    "chalk": "4.1.2",
     "cross-env": "^7.0.3",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "winston": "3.11.0",
+    "winston-daily-rotate-file": "5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

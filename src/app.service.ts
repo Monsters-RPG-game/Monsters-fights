@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import BrokerService from './broker/broker.service';
-import * as console from 'node:console';
+import Log from './tools/logger/log';
+import type * as types from './types';
 
 @Injectable()
 export default class AppService {
-  constructor(private readonly client: BrokerService) {
-    //
-  }
-
-  async handleMessage(data: unknown): Promise<void> {
-    console.log('Received message:', data);
-    await this.client.sendHeartBeat();
+  async attack(payload: types.IRabbitMessage): Promise<void> {
+    Log.log('Got new attack message:', payload);
+    return new Promise((resolve) => {
+      resolve(undefined);
+    });
   }
 }

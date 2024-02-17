@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import AppController from './app.controller';
 import AppService from './app.service';
-import BrokerModule from './broker/broker.module';
+import BrokerModule from './connections/broker/broker.module';
 
 @Module({
   imports: [BrokerModule],

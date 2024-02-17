@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 import AppService from './app.service';
 
 @Controller()
@@ -7,8 +8,8 @@ export default class AppController {
     console.info('Added log for eslint to not be mad');
   }
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @MessagePattern()
+  async handleMessage(data: unknown): Promise<void> {
+    return this.appService.handleMessage(data);
   }
 }

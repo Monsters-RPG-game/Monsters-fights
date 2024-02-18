@@ -22,6 +22,9 @@ export default class AppController {
 
   @MessagePattern()
   async handleMessage(payload: IRabbitMessage): Promise<void> {
+    Log.log('Server', 'Got new message');
+    Log.log('Server', JSON.stringify(payload));
+
     if (payload.target === enums.EMessageTypes.Heartbeat) {
       await this.client.sendHeartBeat();
     } else {

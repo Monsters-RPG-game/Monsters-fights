@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import AppService from './app.service';
 import BrokerService from './connections/broker/broker.service';
 import * as enums from './enums';
@@ -21,7 +21,7 @@ export default class AppController {
   }
 
   @MessagePattern()
-  async handleMessage(payload: IRabbitMessage): Promise<void> {
+  async handleMessage(@Payload() payload: IRabbitMessage): Promise<void> {
     Log.log('Server', 'Got new message');
     Log.log('Server', JSON.stringify(payload));
 

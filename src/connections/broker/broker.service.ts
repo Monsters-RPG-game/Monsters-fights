@@ -2,7 +2,7 @@ import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
 import * as enums from '../../enums';
 import { NotConnectedError } from '../../errors';
-import Log from '../../tools/logger/log';
+import Log from '../../tools/logger';
 import type { IRabbitMessage } from '../../types';
 
 @Injectable()

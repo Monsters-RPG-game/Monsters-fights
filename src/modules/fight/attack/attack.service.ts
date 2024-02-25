@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import Log from '../../../tools/logger/log';
+import Log from '../../../tools/logger';
 import type * as types from '../../../types';
 
 @Injectable()

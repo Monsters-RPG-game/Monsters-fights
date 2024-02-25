@@ -3,7 +3,7 @@ import { Transport } from '@nestjs/microservices';
 import AppModule from './app.module';
 import { EAmqQueues } from './enums';
 import getConfig from './tools/configLoader';
-import Log from './tools/logger/log';
+import Log from './tools/logger';
 import type { MicroserviceOptions } from '@nestjs/microservices';
 
 /**

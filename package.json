@@ -14,9 +14,9 @@
     "lint": "cross-env NODE_ENV=development eslint . --ext .ts --fix",
     "listErrors": "node_modules/.bin/tsc --skipLibCheck",
     "lintStaged": "npx lint-staged",
-    "test:unit": "jest --watch --config tests/jest.config.unit.ts",
-    "test:e2e": "jest --watch --config tests/jest.config.e2e.ts",
-    "test:db": "jest --watch --config tests/jest.config.db.ts",
+    "test:unit": "jest --config tests/jest.config.unit.ts",
+    "test:e2e": "jest --config tests/jest.config.e2e.ts",
+    "test:db": "jest --config tests/jest.config.db.ts",
     "migrate:prod": "nest build && cross-env NODE_ENV=production node build/src/migrations/main.js",
     "migrate:dev": "nest build && cross-env NODE_ENV=dev node build/src/migrations/main.js",
     "prepare": "husky install"

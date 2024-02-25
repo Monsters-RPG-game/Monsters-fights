@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import type { IStateTeam } from './fight.entity';
+import type { IStateTeam } from './state.entity';
 import type { HydratedDocument } from 'mongoose';
 
 @Schema()

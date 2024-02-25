@@ -58,6 +58,8 @@ export default class AppController {
         return this.service.attack(payload);
       case enums.EFightsTargets.CreateFight:
         return this.service.createFight(payload);
+      case enums.EFightsTargets.Leave:
+        return this.service.leave(payload);
       default:
         throw new errors.IncorrectTargetError();
     }

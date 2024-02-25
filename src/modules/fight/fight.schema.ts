@@ -17,6 +17,19 @@ export class Fight {
     unique: true,
   })
   states: mongoose.Types.ObjectId = new mongoose.Types.ObjectId();
+
+  @Prop({
+    type: mongoose.Types.ObjectId,
+    required: [true, 'Attacker not provided'],
+  })
+  attacker: mongoose.Types.ObjectId = new mongoose.Types.ObjectId();
+
+  @Prop({
+    type: Boolean,
+    required: [true, 'Active not provided'],
+    default: true,
+  })
+  active: boolean = true;
 }
 
 export type IFight = HydratedDocument<Fight>;

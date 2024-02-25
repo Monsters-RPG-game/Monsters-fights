@@ -1,3 +1,4 @@
 {
   "amqpURI": "rabbitUrl",
+  "mongoURI": "mongoUrl"
 }

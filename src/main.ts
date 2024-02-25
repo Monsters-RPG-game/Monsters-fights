@@ -3,6 +3,7 @@ import { Transport } from '@nestjs/microservices';
 import AppModule from './app.module';
 import { EAmqQueues } from './enums';
 import getConfig from './tools/configLoader';
+import Log from './tools/logger/log';
 import type { MicroserviceOptions } from '@nestjs/microservices';
 
 /**
@@ -27,5 +28,5 @@ async function bootstrap(): Promise<void> {
 }
 
 bootstrap().catch((err) => {
-  console.info("Couldn't start app", err);
+  Log.error("Couldn't start app", err);
 });

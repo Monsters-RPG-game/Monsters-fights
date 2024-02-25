@@ -1,8 +1,8 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
 import BrokerService from './broker.service';
-import { EAmqQueues } from '../enums';
-import getConfig from '../tools/configLoader';
+import { EAmqQueues } from '../../enums';
+import getConfig from '../../tools/configLoader';
 
 @Module({
   imports: [

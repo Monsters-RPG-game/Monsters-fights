@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Fight } from './fight.schema';
 import type { IFightEntity } from './fight.entity';
 
@@ -25,6 +25,6 @@ export default class FightRooster {
   }
 
   async getActiveByUser(attacker: string): Promise<IFightEntity | null> {
-    return this.fight.findOne({ attacker, active: true }).lean();
+    return this.fight.findOne({ attacker: new mongoose.Types.ObjectId(attacker), active: true }).lean();
   }
 }

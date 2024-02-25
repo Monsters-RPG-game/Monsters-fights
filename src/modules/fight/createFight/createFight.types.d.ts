@@ -1,12 +1,6 @@
-export interface IFightProfile {
-  userName: string;
-  userId: string;
-  lvl: number;
-  exp: [number, number];
-  inventory: string;
-}
+import type { IStateTeam } from '../../state/state.types';
 
 export interface ICreateFightDto {
-  teams: [IFightProfile[], IFightProfile[]];
+  teams: [IStateTeam[], IStateTeam[]];
   attacker: string;
 }

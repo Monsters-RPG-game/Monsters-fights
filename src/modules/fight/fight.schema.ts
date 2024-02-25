@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import type { HydratedDocument } from 'mongoose';
 
 @Schema()
 export class Fight {
@@ -31,7 +30,5 @@ export class Fight {
   })
   active: boolean = true;
 }
-
-export type IFight = HydratedDocument<Fight>;
 
 export const FightSchema = SchemaFactory.createForClass(Fight);

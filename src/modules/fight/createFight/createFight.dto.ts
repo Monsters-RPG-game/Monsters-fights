@@ -1,8 +1,9 @@
 import Validation from '../../../tools/validation';
-import type { ICreateFightDto, IFightProfile } from './createFight.types';
+import type { ICreateFightDto } from './createFight.types';
+import type { IStateTeam } from '../../state/state.types';
 
 export default class CreateFightDto implements ICreateFightDto {
-  teams: [IFightProfile[], IFightProfile[]];
+  teams: [IStateTeam[], IStateTeam[]];
   attacker: string;
 
   constructor(data: ICreateFightDto) {
@@ -20,8 +21,7 @@ export default class CreateFightDto implements ICreateFightDto {
       new Validation(t, 'team').isArray();
 
       t.forEach((ch) => {
-        new Validation(ch.userId, 'userId').isDefined().isObjectId();
-        new Validation(ch.userName, 'userName').isDefined().isString();
+        new Validation(ch.character, 'character').isDefined().isObjectId();
       });
     });
   }

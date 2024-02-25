@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { State } from './state.schema';
-import type { IStateEntity } from './state.entity';
+import type { IStateEntity } from './log.entity';
 import type { ICreateStateDto } from './state.types';
 
 @Injectable()
@@ -12,7 +12,7 @@ export default class StateRooster {
   }
 
   async add(data: ICreateStateDto): Promise<string> {
-    const newElement = new this.state({ init: { teams: data.teams[0] }, current: { teams: data.teams[1] } });
+    const newElement = new this.state({ init: { teams: data.teams }, current: { teams: data.teams } });
     const callback = await newElement.save();
     return callback._id.toString();
   }

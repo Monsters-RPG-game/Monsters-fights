@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import AttackDto from './modules/fight/attack/attack.dto';
 import AttackService from './modules/fight/attack/attack.service';
 import CreateFightDto from './modules/fight/createFight/createFight.dto';
 import CreateFightService from './modules/fight/createFight/createFight.service';
@@ -18,7 +19,8 @@ export default class AppService {
   }
 
   async attack(payload: types.IRabbitMessage): Promise<void> {
-    await this.attackService.attack(payload);
+    const target = new DtoPipe(AttackDto);
+    await this.attackService.attack(target.transform(payload.payload as AttackDto), payload.user.userId as string);
   }
 
   async createFight(payload: types.IRabbitMessage): Promise<void> {

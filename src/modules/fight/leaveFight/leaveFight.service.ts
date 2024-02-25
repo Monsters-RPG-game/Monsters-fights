@@ -19,6 +19,6 @@ export default class LeaveFightService {
     if (!this.service.get(payload.user) && !dbFight) throw new UserNotInFight();
 
     if (this.service.get(payload.user)) this.service.leaveFight(payload);
-    if (dbFight) await this.rooster.update(dbFight._id, { active: false });
+    if (dbFight) await this.rooster.update(dbFight._id.toString(), { active: false });
   }
 }

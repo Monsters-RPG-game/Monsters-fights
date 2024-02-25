@@ -1,4 +1,7 @@
-import type { IStateTeam } from './state.entity';
+export interface IStateTeam {
+  character: string;
+  hp: number;
+}
 
 export interface ICreateStateDto {
   teams: IStateTeam[][];

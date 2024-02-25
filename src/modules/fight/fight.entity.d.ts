@@ -1,7 +1,5 @@
-export interface IFightEntity {
-  _id: string;
-  log: string;
-  states: string;
-  attacker: string;
-  active: boolean;
-}
+import type { Fight } from './fight.schema';
+import type { TypesOfClass } from '../../types';
+import type mongoose from 'mongoose';
+
+export type IFightEntity = TypesOfClass<Fight> & { _id: mongoose.Types.ObjectId };

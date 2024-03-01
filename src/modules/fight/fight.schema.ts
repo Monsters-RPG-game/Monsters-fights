@@ -29,6 +29,13 @@ export class Fight {
     default: true,
   })
   active: boolean = true;
+
+  @Prop({
+    type: Number,
+    required: [true, 'phase not provided'],
+    default: 1,
+  })
+  phase: number = 1;
 }
 
 export const FightSchema = SchemaFactory.createForClass(Fight);

@@ -12,7 +12,7 @@ export default class StateRooster {
   }
 
   async add(data: ICreateStateDto): Promise<string> {
-    const newElement = new this.state({ init: { teams: data.teams }, current: { teams: data.teams } });
+    const newElement = new this.state({ initialized: { teams: data.teams }, current: { teams: data.teams } });
     const callback = await newElement.save();
     return callback._id.toString();
   }

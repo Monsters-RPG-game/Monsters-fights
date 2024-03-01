@@ -9,6 +9,7 @@ import StateRooster from '../../state/state.rooster';
 import StateService from '../../state/state.service';
 import FightRooster from '../fight.rooster';
 import type { IStateTeam } from '../../state/state.types';
+import type { IFightEntity } from '../fight.entity';
 
 @Injectable()
 export default class CreateFightService {
@@ -38,13 +39,22 @@ export default class CreateFightService {
 
     const states = await this.stateRooster.add(state);
     const log = await this.logRooster.addBasic();
-    await this.fightRooster.add({
+    const fight: Omit<IFightEntity, '_id'> = {
       active: true,
       attacker: new mongoose.Types.ObjectId(payload.attacker),
       log: new mongoose.Types.ObjectId(log),
       states: new mongoose.Types.ObjectId(states),
+      phase: 1,
+    };
+    const fightId = await this.fightRooster.add(fight);
+    this.service.createFight({
+      ...fight,
+      states: {
+        initialized: structuredClone(state),
+        current: structuredClone(state),
+        _id: new mongoose.Types.ObjectId(states),
+      },
+      _id: new mongoose.Types.ObjectId(fightId),
     });
-
-    this.service.createFight(payload);
   }
 }

@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { EAction } from '../../enums';
-import type { HydratedDocument } from 'mongoose';
 
 @Schema()
 export class Action {
@@ -30,7 +29,5 @@ export class Action {
   })
   value: number = 0;
 }
-
-export type IAction = HydratedDocument<Action>;
 
 export const ActionSchema = SchemaFactory.createForClass(Action);

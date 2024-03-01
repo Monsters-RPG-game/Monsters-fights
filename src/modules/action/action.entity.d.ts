@@ -1,10 +1,5 @@
-import type { EAction } from '../../enums';
+import type { Action } from './action.schema';
+import type { TypesOfClass } from '../../types';
+import type mongoose from 'mongoose';
 
-export interface IActionEntity {
-  _id: string;
-  character: string;
-  action: EAction;
-  target: string;
-  value: number;
-  date: number;
-}
+export type IActionEntity = TypesOfClass<Action> & { _id: mongoose.Types.ObjectId };

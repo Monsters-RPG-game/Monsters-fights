@@ -5,10 +5,12 @@ import type { IStateTeam } from './state.types';
 @Schema()
 export class State {
   @Prop({
+    _id: false,
     type: {
       teams: [
         [
           {
+            _id: false,
             character: mongoose.Types.ObjectId,
             hp: Number,
           },
@@ -17,13 +19,15 @@ export class State {
     },
     default: { teams: [] },
   })
-  init: { teams: IStateTeam[][] } = { teams: [] };
+  initialized: { teams: IStateTeam[][] } = { teams: [] };
 
   @Prop({
     type: {
+      _id: false,
       teams: [
         [
           {
+            _id: false,
             character: mongoose.Types.ObjectId,
             hp: Number,
           },

@@ -118,3 +118,13 @@ export class UserNotInFight extends FullError {
     this.status = 400;
   }
 }
+
+export class IncorrectAttackTarget extends FullError {
+  constructor() {
+    super('IncorrectAttackTarget');
+    this.message = 'No enemy with provided name';
+    this.name = 'IncorrectAttackTarget';
+    this.code = '025';
+    this.status = 400;
+  }
+}

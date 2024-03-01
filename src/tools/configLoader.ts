@@ -13,7 +13,7 @@ export default function getConfig(): types.IConfigInterface {
     case 'dev':
     case 'test':
       return devConfig as types.IConfigInterface;
-    case 'prod':
+    case 'production':
       return prodConfig as types.IConfigInterface;
     default:
       throw new Error('No config files');

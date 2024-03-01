@@ -1,6 +1,4 @@
 // eslint-disable-next-line import/prefer-default-export
-export enum EFightsTargets {
+export enum EAction {
   Attack = 'attack',
-  CreateFight = 'createFight',
-  Leave = 'leave',
 }

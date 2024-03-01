@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import Log from '../tools/logger/log';
+import Log from '../tools/logger';
 
 @Injectable()
 export default class MigrationService {

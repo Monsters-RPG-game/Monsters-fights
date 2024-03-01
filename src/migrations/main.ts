@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import MigrationModule from './migration.module';
-import Log from '../tools/logger/log';
+import Log from '../tools/logger';
 import type { MicroserviceOptions } from '@nestjs/microservices';
 
 /**

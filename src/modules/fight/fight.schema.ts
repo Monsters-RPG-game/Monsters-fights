@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import type { HydratedDocument } from 'mongoose';
 
 @Schema()
 export class Fight {
@@ -17,8 +16,26 @@ export class Fight {
     unique: true,
   })
   states: mongoose.Types.ObjectId = new mongoose.Types.ObjectId();
-}
 
-export type IFight = HydratedDocument<Fight>;
+  @Prop({
+    type: mongoose.Types.ObjectId,
+    required: [true, 'Attacker not provided'],
+  })
+  attacker: mongoose.Types.ObjectId = new mongoose.Types.ObjectId();
+
+  @Prop({
+    type: Boolean,
+    required: [true, 'Active not provided'],
+    default: true,
+  })
+  active: boolean = true;
+
+  @Prop({
+    type: Number,
+    required: [true, 'phase not provided'],
+    default: 1,
+  })
+  phase: number = 1;
+}
 
 export const FightSchema = SchemaFactory.createForClass(Fight);

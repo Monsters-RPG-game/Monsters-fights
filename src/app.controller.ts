@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import AppService from './app.service';
 import BrokerService from './connections/broker/broker.service';
 import * as enums from './enums';
 import { EMessageTypes } from './enums';
 import * as errors from './errors';
-import Log from './tools/logger/log';
+import Log from './tools/logger';
 import { IRabbitMessage } from './types';
 import type { IFullError } from './types';
 
@@ -21,13 +21,12 @@ export default class AppController {
   }
 
   @MessagePattern()
-  async handleMessage(payload: IRabbitMessage): Promise<void> {
-    Log.log('Server', 'Got new message');
-    Log.log('Server', JSON.stringify(payload));
-
+  async handleMessage(@Payload() payload: IRabbitMessage): Promise<void> {
     if (payload.target === enums.EMessageTypes.Heartbeat) {
       await this.client.sendHeartBeat();
     } else {
+      Log.log('Server', 'Got new message');
+      Log.log('Server', JSON.stringify(payload));
       this._queue[payload.user.tempId] = payload;
       this.errorWrapper(async () => this.routeMessage(payload), payload.user.tempId);
     }
@@ -47,16 +46,20 @@ export default class AppController {
         throw new errors.IncorrectTargetError();
     }
 
-    const userId = payload.user.userId as string;
+    const userId = payload.user.tempId;
     const prevData = this._queue[userId];
     delete this._queue[userId];
-    await this.client.send(prevData as IRabbitMessage, data, data.messageType);
+    await this.client.send(prevData as IRabbitMessage, data.payload, data.messageType);
   }
 
   async routeFightMessage(payload: IRabbitMessage): Promise<unknown> {
     switch (payload.subTarget) {
       case enums.EFightsTargets.Attack:
         return this.service.attack(payload);
+      case enums.EFightsTargets.CreateFight:
+        return this.service.createFight(payload);
+      case enums.EFightsTargets.Leave:
+        return this.service.leave(payload);
       default:
         throw new errors.IncorrectTargetError();
     }

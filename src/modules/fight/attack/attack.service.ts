@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Payload } from '@nestjs/microservices';
 import mongoose from 'mongoose';
 import AttackDto from './attack.dto';
-import { EAction } from '../../../enums';
+import { EAction, EFightStatus } from '../../../enums';
 import { IncorrectAttackTarget, UserNotInFight } from '../../../errors';
 import Log from '../../../tools/logger';
 import DtoPipe from '../../../tools/pipes/dto.pipe';
@@ -32,7 +32,7 @@ export default class AttackService {
   async attack(
     @Payload(new DtoPipe(AttackDto)) payload: AttackDto,
     user: string,
-  ): Promise<Omit<IActionEntity, '_id'>[]> {
+  ): Promise<{ logs: Omit<IActionEntity, '_id'>[]; status: EFightStatus }> {
     Log.log('Got new attack message in attack module:', payload);
 
     let fight = this.service.get(user) as IFullFight;
@@ -74,7 +74,7 @@ export default class AttackService {
       Log.debug('Fight', 'All enemies dead');
       await this.finishFight(fight, actions, user);
 
-      return actions;
+      return { logs: actions, status: EFightStatus.Win };
     }
 
     aliveEnemies.forEach((e) => {
@@ -92,12 +92,12 @@ export default class AttackService {
       Log.debug('Fight', 'Player dead');
       await this.finishFight(fight, actions, user);
 
-      return actions;
+      return { logs: actions, status: EFightStatus.Lose };
     }
 
     const phase = await this.updateDependencies(fight, actions);
     await this.startNextPhase(fight._id.toString(), phase);
-    return actions;
+    return { logs: actions, status: EFightStatus.Ongoing };
   }
 
   private async finishFight(fight: IFullFight, actions: Omit<IActionEntity, '_id'>[], user: string): Promise<void> {

@@ -6,6 +6,7 @@ import CreateFightService from './modules/fight/createFight/createFight.service'
 import LeaveFightDto from './modules/fight/leaveFight/leaveFight.dto';
 import LeaveFightService from './modules/fight/leaveFight/leaveFight.service';
 import DtoPipe from './tools/pipes/dto.pipe';
+import type { EFightStatus } from './enums';
 import type { IActionEntity } from './modules/action/action.entity';
 import type * as types from './types';
 
@@ -19,7 +20,7 @@ export default class AppService {
     //
   }
 
-  async attack(payload: types.IRabbitMessage): Promise<Omit<IActionEntity, '_id'>[]> {
+  async attack(payload: types.IRabbitMessage): Promise<{ logs: Omit<IActionEntity, '_id'>[]; status: EFightStatus }> {
     const target = new DtoPipe(AttackDto);
     return this.attackService.attack(target.transform(payload.payload as AttackDto), payload.user.userId as string);
   }

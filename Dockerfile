@@ -12,5 +12,3 @@ ADD start.sh /usr/src/app
 RUN chmod +x /usr/src/app/start.sh
 
 CMD ["/usr/src/app/start.sh"]
-EXPOSE 5003
-EXPOSE 5004

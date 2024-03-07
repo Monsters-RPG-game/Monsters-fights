@@ -30,7 +30,36 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+  setup-config:
+    needs: install
+    runs-on: ubuntu-latest
+
+    container:
+      image: node:18
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup config files
+        run: |
+          mkdir -p config
+          echo '{
+            "amqpURI": "rabbitUrl",
+            "mongoURI": "mongoUrl"
+          }' > config/devConfig.json
+          cp config/devConfig.json config/prodConfig.json
+          cp config/devConfig.json config/testConfig.json
+
+      - name: Upload config
+        uses: actions/upload-artifact@v2
+        with:
+          name: config
+          path: config/
+
+
   test:
+    needs: [setup-config]
     runs-on: ubuntu-latest
 
     container:
@@ -55,6 +84,7 @@ jobs:
         run: apt-get update && apt-get install gdebi-core -y && wget http://ftp.us.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb && gdebi --non-interactive libssl1.1_1.1.1w-0+deb11u1_amd64.deb && yarn test:e2e && yarn test:unit && yarn test:db
 
   lint:
+    needs: [setup-config]
     runs-on: ubuntu-latest
 
     container:
@@ -79,7 +109,7 @@ jobs:
         run: npm run lint
 
   build:
-    needs: [test, lint]
+    needs: [test, lint, setup-config]
 
     runs-on: ubuntu-latest
 

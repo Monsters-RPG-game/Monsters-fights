@@ -69,6 +69,20 @@ export default class Validation {
   }
 
   /**
+   * Validate if element is boolean
+   * Require param: any
+   */
+  isBoolean(): this {
+    const { v, name } = this;
+
+    if (typeof v !== 'boolean') {
+      throw new errors.IncorrectArgTypeError(`${name} should be objectId`);
+    }
+
+    return this;
+  }
+
+  /**
    * Validate if element is typeof array
    * Require param: array of strings
    */

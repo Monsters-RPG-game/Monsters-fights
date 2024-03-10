@@ -23,4 +23,11 @@ export default class FightRooster {
   async get(_id: unknown): Promise<IActionEntity | null> {
     return this.action.findOne({ _id }).lean();
   }
+
+  async getMany(ids: string[]): Promise<IActionEntity[]> {
+    return this.action
+      .find({ _id: { $in: ids } })
+      .select({ __v: false, _id: false })
+      .lean();
+  }
 }

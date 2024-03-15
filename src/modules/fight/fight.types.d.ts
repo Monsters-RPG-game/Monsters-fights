@@ -9,6 +9,8 @@ export interface IFullFightLogs extends ILogEntity {
 
 export interface IFullFight extends IFightEntity {
   states: IStateEntity;
+  start: string;
+  finish: string;
 }
 
 export interface IFightReport extends IFightEntity {

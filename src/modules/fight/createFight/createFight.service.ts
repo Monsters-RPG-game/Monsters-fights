@@ -39,12 +39,16 @@ export default class CreateFightService {
 
     const states = await this.stateRooster.add(state);
     const log = await this.logRooster.addBasic();
+    const now = new Date().toISOString();
+
     const fight: Omit<IFightEntity, '_id'> = {
       active: true,
       attacker: new mongoose.Types.ObjectId(payload.attacker),
       log: new mongoose.Types.ObjectId(log),
       states: new mongoose.Types.ObjectId(states),
       phase: 1,
+      start: now,
+      finish: now,
     };
     const fightId = await this.fightRooster.add(fight);
     this.service.createFight({

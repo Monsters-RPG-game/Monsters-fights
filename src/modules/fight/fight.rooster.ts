@@ -67,9 +67,9 @@ export default class FightRooster {
           },
         },
       ])
-      .limit(100)
+      .limit(10)
       .sort({ createdAt: 1 })
-      .skip((page <= 0 ? 0 : page - 1) * 100)) as IFightEntity[];
+      .skip((page <= 0 ? 0 : page - 1) * 10)) as IFightEntity[];
 
     return !data || data.length === 0 ? [] : data;
   }

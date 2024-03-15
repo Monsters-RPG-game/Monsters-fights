@@ -3,4 +3,6 @@ export enum EFightsTargets {
   Attack = 'attack',
   CreateFight = 'createFight',
   Leave = 'leave',
+  GetLogs = 'getLogs',
+  GetFights = 'getFights',
 }

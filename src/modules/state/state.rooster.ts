@@ -22,6 +22,13 @@ export default class StateRooster {
   }
 
   async get(_id: unknown): Promise<IStateEntity | null> {
-    return this.state.findOne({ _id }).lean();
+    return this.state.findOne({ _id }).select({ __v: false }).lean();
+  }
+
+  async getMany(ids: string[]): Promise<IStateEntity[]> {
+    return this.state
+      .find({ _id: { $in: ids } })
+      .select({ __v: false })
+      .lean();
   }
 }

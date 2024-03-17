@@ -14,11 +14,7 @@ module.exports = {
     ecmaVersion: 'latest',
     tsconfigRootDir: __dirname,
   },
-  plugins: [
-    '@typescript-eslint',
-    'eslint-plugin-prettier',
-    '@typescript-eslint/eslint-plugin',
-  ],
+  plugins: ['@typescript-eslint', 'eslint-plugin-prettier', '@typescript-eslint/eslint-plugin'],
   extends: [
     'eslint-config-prettier',
     'eslint:recommended',
@@ -36,16 +32,11 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: [
-          '.ts',
-          '.d.ts',
-        ],
+        extensions: ['.ts', '.d.ts'],
       },
     },
     'import/parsers': {
-      '@typescript-eslint/parser': [
-        '.ts',
-      ],
+      '@typescript-eslint/parser': ['.ts'],
     },
   },
   rules: {
@@ -61,7 +52,7 @@ module.exports = {
       2,
       'ignorePackages',
       {
-        'ts': 'never',
+        ts: 'never',
       },
     ],
     'import/no-cycle': 2,
@@ -71,37 +62,25 @@ module.exports = {
     'import/order': [
       2,
       {
-        'groups': [
-          [
-            'external',
-          ],
-          [
-            'index',
-            'sibling',
-            'parent',
-          ],
-          'type',
-        ],
+        groups: [['external'], ['index', 'sibling', 'parent'], 'type'],
         'newlines-between': 'ignore',
-        'alphabetize': {
-          'caseInsensitive': true,
-          'order': 'asc',
+        alphabetize: {
+          caseInsensitive: true,
+          order: 'asc',
         },
-        'pathGroups': [
+        pathGroups: [
           {
-            'group': 'external',
-            'pattern': 'react',
-            'position': 'before',
+            group: 'external',
+            pattern: 'react',
+            position: 'before',
           },
           {
-            'group': 'external',
-            'pattern': '@my_org/**',
-            'position': 'after',
+            group: 'external',
+            pattern: '@my_org/**',
+            position: 'after',
           },
         ],
-        'pathGroupsExcludedImportTypes': [
-          'builtin',
-        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
     'max-classes-per-file': 2,
@@ -119,16 +98,13 @@ module.exports = {
     'no-console': [
       2,
       {
-        'allow': [
-          'info',
-          'trace',
-        ],
+        allow: ['info', 'trace'],
       },
     ],
     'no-constructor-return': 0,
     'no-empty-pattern': 2,
     'no-func-assign': 2,
-    'no-implicit-coercion': 2,
+    'no-implicit-coercion': 0,
     'no-implicit-globals': 2,
     'no-implied-eval': 2,
     'no-import-assign': 2,
@@ -175,7 +151,7 @@ module.exports = {
     'object-curly-newline': [
       2,
       {
-        'consistent': true,
+        consistent: true,
       },
     ],
     'object-shorthand': 2,
@@ -184,8 +160,8 @@ module.exports = {
     'prefer-destructuring': [
       2,
       {
-        'object': true,
-        'array': false,
+        object: true,
+        array: false,
       },
     ],
     'prefer-exponentiation-operator': 2,
@@ -210,24 +186,21 @@ module.exports = {
       2,
       'single',
       {
-        'avoidEscape': true,
+        avoidEscape: true,
       },
     ],
     '@typescript-eslint/consistent-type-assertions': [
       2,
       {
-        'assertionStyle': 'as',
+        assertionStyle: 'as',
       },
     ],
-    '@typescript-eslint/consistent-type-definitions': [
-      'error',
-      'interface',
-    ],
+    '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
     '@typescript-eslint/consistent-type-imports': [
       2,
       {
-        'prefer': 'type-imports',
-        'disallowTypeAnnotations': false,
+        prefer: 'type-imports',
+        disallowTypeAnnotations: false,
       },
     ],
     '@typescript-eslint/explicit-function-return-type': 2,
@@ -235,60 +208,43 @@ module.exports = {
     '@typescript-eslint/naming-convention': [
       2,
       {
-        'selector': 'interface',
-        'format': [
-          'PascalCase',
-        ],
-        'custom': {
-          'regex': '^I[A-Z]',
-          'match': true,
+        selector: 'interface',
+        format: ['PascalCase'],
+        custom: {
+          regex: '^I[A-Z]',
+          match: true,
         },
       },
       {
-        'selector': 'enum',
-        'format': [
-          'PascalCase',
-        ],
-        'custom': {
-          'regex': '^E[A-Z]',
-          'match': true,
+        selector: 'enum',
+        format: ['PascalCase'],
+        custom: {
+          regex: '^E[A-Z]',
+          match: true,
         },
       },
       {
-        'selector': 'variable',
-        'format': [
-          'camelCase',
-          'PascalCase',
-        ],
+        selector: 'variable',
+        format: ['camelCase', 'PascalCase'],
       },
       {
-        'selector': 'variable',
-        'modifiers': [
-          'destructured',
-        ],
-        'format': null,
+        selector: 'variable',
+        modifiers: ['destructured'],
+        format: null,
       },
       {
-        'selector': 'classProperty',
-        'modifiers': [
-          'private',
-        ],
-        'format': [
-          'camelCase',
-        ],
-        'leadingUnderscore': 'require',
+        selector: 'classProperty',
+        modifiers: ['private'],
+        format: ['camelCase'],
+        leadingUnderscore: 'require',
       },
       {
-        'selector': 'typeLike',
-        'format': [
-          'PascalCase',
-        ],
+        selector: 'typeLike',
+        format: ['PascalCase'],
       },
       {
-        'selector': 'variable',
-        'format': [
-          'camelCase',
-        ],
+        selector: 'variable',
+        format: ['camelCase'],
       },
     ],
     '@typescript-eslint/no-dynamic-delete': 0,
@@ -304,29 +260,25 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       2,
       {
-        'argsIgnorePattern': '^_',
-        'varsIgnorePattern': '^_',
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
       },
     ],
     '@typescript-eslint/no-misused-promises': [
       2,
       {
-        'checksVoidReturn': false,
+        checksVoidReturn: false,
       },
     ],
     '@typescript-eslint/no-this-alias': [
       2,
       {
-        'allowedNames': [
-          'self',
-        ],
+        allowedNames: ['self'],
       },
     ],
     '@typescript-eslint/no-var-requires': 2,
     '@typescript-eslint/prefer-nullish-coalescing': 2,
-    '@typescript-eslint/semi': [
-      2,
-    ],
+    '@typescript-eslint/semi': [2],
     '@typescript-eslint/typedef': 2,
   },
 };

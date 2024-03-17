@@ -34,13 +34,12 @@ export default class FightRooster {
           },
         },
         {
-          $addFields: { start: '$createdAt', finish: '$updatedAt' },
+          $addFields: { start: '$createdAt' },
         },
         {
           $project: {
             __v: 0,
             createdAt: 0,
-            updatedAt: 0,
           },
         },
       ])

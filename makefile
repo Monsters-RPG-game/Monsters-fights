@@ -9,7 +9,7 @@ test:
 	&& npm run test:e2e
 
 buildDocker:
-	docker build -t monsters/monsters-gateway .
+	docker build -t monsters/monsters-fights .
 
 buildTestDocker:
-	docker build --build-arg NODE_ENV=testDev -t monsters/monsters-gateway-test .
+	docker build --build-arg NODE_ENV=testDev -t monsters/monsters-fights-test .

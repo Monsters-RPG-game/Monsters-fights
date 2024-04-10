@@ -1,13 +1,3 @@
-export enum EAmqQueues {
-  Gateway = 'gatewayQueue',
-  Fights = 'fightsQueue',
-}
-
-export enum EServices {
-  Gateway = 'gateway',
-  Fights = 'fights',
-}
-
 export enum EMessageTypes {
   Error = 'error',
   Credentials = 'credentials',
@@ -15,6 +5,16 @@ export enum EMessageTypes {
   Heartbeat = 'heartbeat',
 }
 
-export enum EMessageTargets {
-  Fight = 'fight',
+export enum ERabbit {
+  RetryLimit = 10,
+}
+
+export enum EServices {
+  Gateway = 'gateway',
+  Fights = 'fights',
+}
+
+export enum EAmqQueues {
+  Gateway = 'gatewayQueue',
+  Fights = 'fightsQueue',
 }

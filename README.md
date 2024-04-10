@@ -53,5 +53,3 @@ yarn tests:db = run 'database' tests
 yarn tests:unit = run 'unit' tests
 yarn test:watch = run tests in 'watch' mode
 ```
-
-#### Alongside tests, this app have 'test mode' which will help you run e2e tests. It runs in memory instance of mongoDB and fill it with "fakeData.json" data

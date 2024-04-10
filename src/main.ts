@@ -1,32 +1,49 @@
-import { NestFactory } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
-import AppModule from './app.module';
-import { EAmqQueues } from './enums';
-import getConfig from './tools/configLoader';
+import Broker from './connections/broker';
+import Mongo from './connections/mongo';
+import Liveness from './tools/liveness';
 import Log from './tools/logger';
-import type { MicroserviceOptions } from '@nestjs/microservices';
+import State from './tools/state';
+import type { IFullError } from './types';
 
-/**
- * Initialize app
- * @description Initialize application
- *
- * @async
- * @returns {void} void
- */
-async function bootstrap(): Promise<void> {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-    transport: Transport.RMQ,
-    options: {
-      urls: [getConfig().amqpURI],
-      queue: EAmqQueues.Fights,
-      queueOptions: {
-        durable: true,
-      },
-    },
-  });
-  await app.listen();
+class App {
+  private _liveness: Liveness | undefined;
+
+  private get liveness(): Liveness | undefined {
+    return this._liveness;
+  }
+
+  private set liveness(value: Liveness | undefined) {
+    this._liveness = value;
+  }
+
+  init(): void {
+    this.start().catch((err) => {
+      const { stack, message } = err as IFullError;
+      Log.log('Server', 'Err while initializing app');
+      Log.log('Server', message, stack);
+
+      return this.kill();
+    });
+  }
+
+  kill(): void {
+    State.broker.close();
+
+    Log.log('Server', 'Server closed');
+  }
+
+  private async start(): Promise<void> {
+    const mongo = new Mongo();
+    State.broker = new Broker();
+
+    await mongo.init();
+    State.broker.init();
+    Log.log('Server', 'Server started');
+
+    this.liveness = new Liveness();
+    this.liveness.init();
+  }
 }
 
-bootstrap().catch((err) => {
-  Log.error("Couldn't start app", err);
-});
+const app = new App();
+app.init();

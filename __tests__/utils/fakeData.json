@@ -1,0 +1,64 @@
+{
+  "messages": [
+    {
+      "_id": "63e55edbe8a800060911121d",
+      "body": "63e55edbe8a800060941121d",
+      "receiver": "63e55edbe8a800060931121d",
+      "sender": "63e55edbe8a800060921121d",
+      "owner": "63e55edbe8a800060931121d",
+      "read": false,
+      "type": "message",
+      "chatId": "643455e9624e17c406070ca1",
+      "createdAt": "2023-04-08T11:03:17.835+00:00",
+      "updatedAt": "2023-04-08T11:03:17.835+00:00"
+    },
+    {
+      "_id": "63e55edbe8a800060911121e",
+      "body": "63e55edbe8a800060941121e",
+      "receiver": "63e55edbe8a800060931121e",
+      "sender": "63e55edbe8a800060921121e",
+      "owner": "63e55edbe8a800060931121d",
+      "read": true,
+      "type": "message",
+      "chatId": "643455e9624e17c406070ca1",
+      "createdAt": "2023-04-08T11:03:17.835+00:00",
+      "updatedAt": "2023-04-08T11:03:17.835+00:00"
+    }
+  ],
+  "chatMessages": [
+    {
+      "_id": "63e55edbe8a800060911122d",
+      "body": "63e55edbe8a800060941121d",
+      "receiver": "63e55edbe8a800060931121d",
+      "sender": "63e55edbe8a800060921121d",
+      "owner": "63e55edbe8a800060931121d",
+      "read": false,
+      "type": "chat",
+      "chatId": "643455e9624e17c406070ca1",
+      "createdAt": "2023-04-08T11:03:17.835+00:00",
+      "updatedAt": "2023-04-08T11:03:17.835+00:00"
+    },
+    {
+      "_id": "63e55edbe8a800060911122e",
+      "body": "63e55edbe8a800060941121e",
+      "receiver": "63e55edbe8a800060931121e",
+      "sender": "63e55edbe8a800060921121e",
+      "owner": "63e55edbe8a800060931121d",
+      "read": false,
+      "type": "chat",
+      "chatId": "643455e9624e17c406070ca1",
+      "createdAt": "2023-04-08T11:03:17.835+00:00",
+      "updatedAt": "2023-04-08T11:03:17.835+00:00"
+    }
+  ],
+  "details": [
+    {
+      "_id": "63e55edbe8a800060941121d",
+      "message": "Hi there"
+    },
+    {
+      "_id": "63e55edbe8a800060941121e",
+      "message": "Hi there"
+    }
+  ]
+}

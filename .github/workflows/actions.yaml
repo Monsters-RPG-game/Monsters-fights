@@ -57,7 +57,6 @@ jobs:
           name: config
           path: config/
 
-
   test:
     needs: [setup-config]
     runs-on: ubuntu-latest
@@ -121,7 +120,7 @@ jobs:
         run: npm run lint
 
   build:
-    needs: [test, lint, setup-config]
+    needs: [setup-config, test, lint]
 
     runs-on: ubuntu-latest
 

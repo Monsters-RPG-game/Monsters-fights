@@ -1,67 +1,69 @@
-# compiled output
-/dist
-/node_modules
-/build
-
 # Logs
 logs
 *.log
 npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
 
+# Dependencies
+node_modules/
 
-# Tests
-/coverage
-/.nyc_output
+# Coverage
+coverage
 
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# Transpiled files
+build/
 
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# VS Code
+.vscode
+!.vscode/tasks.js
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+# JetBrains IDEs
+.idea/
 
-# temp directory
-.temp
-.tmp
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# Misc
-.DS_Store
-package-lock.json
+# Optional npm cache directory
+.npm
 yarn.lock
 
 # Optional eslint cache
 .eslintcache
 
+# Misc
+.DS_Store
+dist/
+/dist
+dist
+package-lock.json
+
+/img/**/*
+img/*
+img/
+/img
+
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+yarn-debug.log*
+yarn-error.log*
+/.temp_img/*
+/.temp_audio/*
+/.VSCodeCounter
+
 # Config files
 config/devConfig.json
 config/prodConfig.json
 config/testConfig.json
+
+# K8s
+.livenessProbe

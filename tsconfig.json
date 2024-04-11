@@ -53,9 +53,10 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "sourceMap": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": false
   },
   "include": [
     "**/*"
   ]
 }
+

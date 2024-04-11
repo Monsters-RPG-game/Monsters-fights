@@ -1,0 +1,81 @@
+{
+  "actions": [
+    {
+      "_id": "65edc7d4efd4ecbb6ca8d69d",
+      "character": "65ed8d7746df2cc0f50926ab",
+      "action": "attack",
+      "target": "65edaf46f08f4b4b8030ff38",
+      "value": -5
+    },
+    {
+      "_id": "65edc7d4efd4ecbb6ca8d69e",
+      "character": "65edaf46f08f4b4b8030ff38",
+      "action": "attack",
+      "target": "65ed8d7746df2cc0f50926ab",
+      "value": -5
+    }
+  ],
+  "fights": [
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d698",
+      "log": "65edc7bcefd4ecbb6ca8d696",
+      "states": "65edc7bcefd4ecbb6ca8d694",
+      "attacker": "65ed8d7746df2cc0f50926ab",
+      "active": true,
+      "phase": 2,
+      "start": "2024-03-10T14:46:20.986Z",
+      "finish": "2024-03-10T14:53:25.923Z"
+    }
+  ],
+  "logs": [
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d696",
+      "logs": [
+        {
+          "phase": 1,
+          "actions": [
+            "65edc7d4efd4ecbb6ca8d69d",
+            "65edc7d4efd4ecbb6ca8d69e"
+          ]
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d694",
+      "initialized": {
+        "teams": [
+          [
+            {
+              "character": "65ed8d7746df2cc0f50926ab",
+              "hp": 10
+            }
+          ],
+          [
+            {
+              "character": "65edaf46f08f4b4b8030ff38",
+              "hp": 10
+            }
+          ]
+        ]
+      },
+      "current": {
+        "teams": [
+          [
+            {
+              "character": "65ed8d7746df2cc0f50926ab",
+              "hp": 8
+            }
+          ],
+          [
+            {
+              "character": "65edaf46f08f4b4b8030ff38",
+              "hp": 5
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

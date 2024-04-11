@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
 import CreateFightDto from './dto';
 import { UserAlreadyInFight } from '../../../errors';
 import ControllerFactory from '../../../tools/abstract/controller';
+import State from '../../../tools/state';
 import LogsController from '../../log/controller';
 import StatesController from '../../state/controller';
 import Fight from '../model';
@@ -34,7 +34,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   async createFight(data: ICreateFightDto): Promise<void> {
     const payload = new CreateFightDto(data);
 
-    if (this.state.get(payload.attacker)) throw new UserAlreadyInFight();
+    if (State.cache.get(payload.attacker)) throw new UserAlreadyInFight();
     const dbFight = await this.rooster.getActiveByUser(payload.attacker);
     if (dbFight) throw new UserAlreadyInFight();
 
@@ -54,15 +54,15 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
     const fight: Omit<IFightEntity, '_id'> = {
       active: true,
-      attacker: new mongoose.Types.ObjectId(payload.attacker),
-      log: new mongoose.Types.ObjectId(log),
-      states: new mongoose.Types.ObjectId(states),
+      attacker: payload.attacker,
+      log,
+      states,
       phase: 1,
       start: now,
       finish: now,
     };
     const fightId = await this.rooster.add(fight as Omit<IFightEntity, '_id' | 'start' | 'finish'>);
-    this.state.createFight({
+    State.cache.create({
       ...fight,
       states: {
         initialized: structuredClone(state),

@@ -1,16 +1,16 @@
 import AttackController from './attack';
-import CreateController from './createFight';
+import CreateController from './create';
 import GetController from './get';
 import GetLogsController from './getLogs';
-import LeaveController from './leaveFight';
+import LeaveController from './leave';
 import * as enums from '../../enums';
 import HandlerFactory from '../../tools/abstract/handler';
 import State from '../../tools/state';
 import type { IAttackDto } from './attack/types';
-import type { ICreateFightDto } from './createFight/types';
+import type { ICreateFightDto } from './create/types';
 import type { IGetFightDto } from './get/types';
 import type { IGetLogsDto } from './getLogs/types';
-import type { ILeaveFightDto } from './leaveFight/types';
+import type { ILeaveFightDto } from './leave/types';
 import type { EModules } from '../../enums';
 import type { ILocalUser } from '../../types';
 

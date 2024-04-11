@@ -1,24 +1,29 @@
 import type { EFakeData } from '../enums';
-import type Messages from '../../../../src/modules/messages/model';
-import type Details from '../../../../src/modules/messagesDetails/model';
-import { IMessageEntity } from '../../../../src/modules/messages/entity';
-import { IMessageDetailsEntity } from '../../../../src/modules/messagesDetails/entity';
-import Chat from '../../../../src/modules/chat/model';
+import Action from '../../../../src/modules/actions/model';
+import Fight from '../../../../src/modules/fights/model';
+import Log from '../../../../src/modules/log/model';
+import State from '../../../../src/modules/state/model';
+import { IActionEntity } from '../../../../src/modules/actions/entity';
+import { IFightEntity } from '../../../../src/modules/fights/entity';
+import { ILogEntity } from '../../../../src/modules/log/entity';
+import { IStateEntity } from '../../../../src/modules/state/entity';
 
 export type IFakeParam<T> = {
   [P in keyof T]?: T[P];
 };
 
 export interface IFakeState {
-  [EFakeData.Messages]: IFakeParam<IMessageEntity>;
-  [EFakeData.MessageDetails]: IFakeParam<IMessageDetailsEntity>;
-  [EFakeData.Chat]: IFakeParam<IMessageEntity>;
+  [EFakeData.Actions]: IFakeParam<IActionEntity>;
+  [EFakeData.Fights]: IFakeParam<IFightEntity>;
+  [EFakeData.Logs]: IFakeParam<ILogEntity>;
+  [EFakeData.States]: IFakeParam<IStateEntity>;
 }
 
 export interface IFakeModel {
-  [EFakeData.Messages]: typeof Messages;
-  [EFakeData.MessageDetails]: typeof Details;
-  [EFakeData.Chat]: typeof Chat;
+  [EFakeData.Actions]: typeof Action;
+  [EFakeData.Fights]: typeof Fight;
+  [EFakeData.Logs]: typeof Log;
+  [EFakeData.States]: typeof State;
 }
 
 export type IAbstractBody<T> = {

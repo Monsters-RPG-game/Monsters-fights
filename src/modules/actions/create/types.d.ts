@@ -1,3 +1,8 @@
-import type { IActionEntity } from '../entity';
+import type { EAction } from '../../../enums';
 
-export type ICreateActionDto = IActionEntity;
+export interface ICreateActionDto {
+  character: string;
+  action: EAction;
+  target: string;
+  value: number;
+}

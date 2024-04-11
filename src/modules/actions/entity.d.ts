@@ -1,9 +1,9 @@
 import type { EAction } from '../../enums';
-import type mongoose from 'mongoose';
 
 export interface IActionEntity {
-  character: mongoose.Types.ObjectId;
+  _id: string;
+  character: string;
   action: EAction;
-  target: mongoose.Types.ObjectId;
+  target: string;
   value: number;
 }

@@ -1,10 +1,8 @@
-import type mongoose from 'mongoose';
-
 export interface IFightEntity {
   _id: string;
-  log: mongoose.Types.ObjectId;
-  states: mongoose.Types.ObjectId;
-  attacker: mongoose.Types.ObjectId;
+  log: string;
+  states: string;
+  attacker: string;
   active: boolean;
   phase: number;
   start: string;

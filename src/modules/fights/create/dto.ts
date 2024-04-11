@@ -24,5 +24,6 @@ export default class CreateFightDto implements ICreateFightDto {
         new Validation(ch.character, 'character').isDefined().isObjectId();
       });
     });
+    new Validation(this.teams[1], 'enemy team').isArray().minElements(1);
   }
 }

@@ -4,6 +4,8 @@ import type mongoose from 'mongoose';
 
 export default abstract class TemplateFactory<T extends EFakeData> {
   private readonly _target: IFakeModel[T];
+  private _state: IFakeState[T] = {};
+  private _states: IFakeState[T][] = [];
 
   protected constructor(target: IFakeModel[T]) {
     this._target = target;
@@ -14,8 +16,6 @@ export default abstract class TemplateFactory<T extends EFakeData> {
     return this._target;
   }
 
-  private _state: IFakeState[T] = {};
-
   protected get state(): IFakeState[T] {
     return this._state;
   }
@@ -23,8 +23,6 @@ export default abstract class TemplateFactory<T extends EFakeData> {
   protected set state(value: IFakeState[T]) {
     this._state = value;
   }
-
-  private _states: IFakeState[T][] = [];
 
   protected get states(): IFakeState[T][] {
     return this._states;
@@ -34,12 +32,12 @@ export default abstract class TemplateFactory<T extends EFakeData> {
     this._states = value;
   }
 
-  async create(): Promise<mongoose.Types.ObjectId> {
-    const newElm = new this._target(this.state);
+  async create(): Promise<string> {
+    const newElm = new this.target(this.state);
     const { _id } = await newElm.save();
     this.states.push({ ...this.state, _id });
     this.clean();
-    return _id;
+    return _id.toString();
   }
 
   async cleanUp(): Promise<void> {

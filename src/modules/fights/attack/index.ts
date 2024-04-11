@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
 import AttackDto from './dto';
 import { EAction, EFightStatus } from '../../../enums';
 import { IncorrectAttackTarget, UserNotInFight } from '../../../errors';
 import ControllerFactory from '../../../tools/abstract/controller';
 import Log from '../../../tools/logger';
+import State from '../../../tools/state';
 import ActionsController from '../../actions/controller';
 import LogsController from '../../log/controller';
 import StatesController from '../../state/controller';
@@ -51,15 +51,15 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const payload = new AttackDto(data);
     Log.log('Attack', 'Got new attack:', payload);
 
-    let fight = this.states.get(userId);
+    let fight = State.cache.get(userId);
 
     if (!fight) {
       const dbFight = await this.rooster.getActiveByUser(userId);
       if (!dbFight) throw new UserNotInFight();
-      const dbState = await this.states.getFromDb(dbFight?.states._id.toString());
+      const dbState = await this.states.getFromDb(dbFight?.states);
 
-      this.states.createFight({ ...dbFight, states: dbState as IStateEntity });
-      fight = this.states.get(userId) as IFullFight;
+      State.cache.create({ ...dbFight, states: dbState as IStateEntity });
+      fight = State.cache.get(userId) as IFullFight;
     }
 
     const actions: Omit<IActionEntity, '_id'>[] = [];
@@ -79,9 +79,9 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     // Hardcoded attack value
     target.hp = target.hp - 5;
     actions.push({
-      character: new mongoose.Types.ObjectId(userId),
+      character: userId,
       action: EAction.Attack,
-      target: new mongoose.Types.ObjectId(target.character),
+      target: target.character,
       value: -5,
     });
 
@@ -97,9 +97,9 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       // Attack player
       player.hp = player.hp - 2;
       actions.push({
-        character: new mongoose.Types.ObjectId(e.character),
+        character: e.character,
         action: EAction.Attack,
-        target: new mongoose.Types.ObjectId(userId),
+        target: userId,
         value: -2,
       });
     });
@@ -119,7 +119,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   private async finishFight(fight: IFullFight, actions: Omit<IActionEntity, '_id'>[], user: string): Promise<void> {
     await this.updateDependencies(fight, actions);
 
-    this.states.leaveFight({ user });
+    State.cache.leave({ user });
     await this.rooster.update(fight._id.toString(), { active: false });
   }
 

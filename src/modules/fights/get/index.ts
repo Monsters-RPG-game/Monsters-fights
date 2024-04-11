@@ -1,6 +1,7 @@
 import GetFightDto from './dto';
 import { UserNotInFight } from '../../../errors';
 import ControllerFactory from '../../../tools/abstract/controller';
+import State from '../../../tools/state';
 import ActionsController from '../../actions/controller';
 import LogsController from '../../log/controller';
 import StatesController from '../../state/controller';
@@ -62,20 +63,20 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   }
 
   private async getActive(payload: GetFightDto): Promise<IFightReport[]> {
-    const fight = this.state.get(payload.owner) as IFullFight;
+    const fight = State.cache.get(payload.owner) as IFullFight;
 
     if (!fight) {
       const dbFight = await this.rooster.getActiveByUser(payload.owner);
 
       if (!dbFight) throw new UserNotInFight();
       const dbState = await this.state.getFromDb(dbFight?.states.toString());
-      const logs = await this.prepareLogs(dbFight.log._id.toString());
+      const logs = await this.prepareLogs(dbFight.log);
 
       return [{ ...dbFight, _id: dbFight._id.toString(), states: dbState as IStateEntity, log: logs }];
     }
 
     const dbState = await this.state.getFromDb(fight?.states._id);
-    const logs = await this.prepareLogs(fight.log._id.toString());
+    const logs = await this.prepareLogs(fight.log);
 
     return [{ ...fight, _id: fight._id.toString(), states: dbState as IStateEntity, log: logs }];
   }

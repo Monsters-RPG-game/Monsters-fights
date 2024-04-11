@@ -20,8 +20,7 @@
     "test:watch": "jest --watch --config __tests__/jest.config.ts",
     "test:e2e": "jest --runInBand --config __tests__/jest.config.e2e.ts",
     "test:unit": "jest --config __tests__/jest.config.unit.ts",
-    "test:db": "jest --config __tests__/jest.config.db.ts",
-    "prepareHooks": "husky install"
+    "test:db": "jest --config __tests__/jest.config.db.ts"
   },
   "lint-staged": {
     "*.ts": [
@@ -34,7 +33,6 @@
   "dependencies": {
     "amqplib": "0.10.3",
     "chalk": "4.1.2",
-    "husky": "9.0.11",
     "mongoose": "8.2.1",
     "node": "21.7.1",
     "winston": "^3.8.2",

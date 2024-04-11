@@ -10,7 +10,7 @@ export default class Actions extends ControllerFactory<EModules.Actions> {
     super(new Rooster(ActionsModel));
   }
 
-  add(data: ICreateActionDto): Promise<string> {
+  add(data: Omit<ICreateActionDto, '_id'>): Promise<string> {
     return this.rooster.add(data);
   }
 

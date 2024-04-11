@@ -6,7 +6,6 @@ import Fight from '../model';
 import Rooster from '../rooster';
 import type { IGetLogsDto } from './types';
 import type { EModules } from '../../../enums';
-import type { ILogEntity } from '../../log/entity';
 import type { IFullFightLogs } from '../types';
 
 export default class Controller extends ControllerFactory<EModules.Fights> {
@@ -38,9 +37,9 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       _id: id,
     };
 
-    const logs = (await this.logs.getFromDb(id)) as ILogEntity;
+    const logs = await this.logs.getFromDb(id);
 
-    if (logs.logs.length > 0) {
+    if (logs && logs.logs.length > 0) {
       preparedLogs.logs = await Promise.all(
         logs.logs.map(async (l) => {
           return {

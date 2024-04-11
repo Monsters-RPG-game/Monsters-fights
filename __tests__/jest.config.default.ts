@@ -11,6 +11,7 @@ const config: Config = {
   testEnvironment: 'node',
   forceExit: true,
   clearMocks: true,
+  passWithNoTests: true,
 };
 
 export default config;

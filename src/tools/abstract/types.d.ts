@@ -31,8 +31,8 @@ export interface IModulesControllers {
 export interface IRoosterAddData {
   [EModules.Fights]: Omit<IFightEntity, '_id' | 'start' | 'finish'>;
   [EModules.Logs]: Omit<ILogEntity, '_id'>;
-  [EModules.States]: ICreateStateDto;
-  [EModules.Actions]: ICreateActionDto;
+  [EModules.States]: Omit<ICreateStateDto, '_id'>;
+  [EModules.Actions]: Omit<ICreateActionDto, '_id'>;
 }
 
 export interface IRoosterGetData {

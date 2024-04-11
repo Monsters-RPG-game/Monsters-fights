@@ -1,11 +1,10 @@
 import { EAction } from '../../../enums';
 import Validation from '../../../tools/validation';
 import type { ICreateActionDto } from './types';
-import type mongoose from 'mongoose';
 
 export default class CreateActionDto implements ICreateActionDto {
-  character: mongoose.Types.ObjectId;
-  target: mongoose.Types.ObjectId;
+  character: string;
+  target: string;
   action: EAction;
   value: number;
 

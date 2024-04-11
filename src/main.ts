@@ -1,5 +1,6 @@
 import Broker from './connections/broker';
 import Mongo from './connections/mongo';
+import StateController from './modules/state';
 import Liveness from './tools/liveness';
 import Log from './tools/logger';
 import State from './tools/state';
@@ -35,6 +36,7 @@ class App {
   private async start(): Promise<void> {
     const mongo = new Mongo();
     State.broker = new Broker();
+    State.cache = new StateController();
 
     await mongo.init();
     State.broker.init();

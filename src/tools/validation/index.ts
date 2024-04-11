@@ -76,7 +76,7 @@ export default class Validation {
     const { v, name } = this;
 
     if (typeof v !== 'boolean') {
-      throw new errors.IncorrectArgTypeError(`${name} should be objectId`);
+      throw new errors.IncorrectArgTypeError(`${name} should be boolean`);
     }
 
     return this;
@@ -212,7 +212,7 @@ export default class Validation {
 
   /**
    * Validate if element has more children than x
-   * Require param: array of strings
+   * Require param: array
    */
   minElements(amount: number): this {
     const { v, name } = this;

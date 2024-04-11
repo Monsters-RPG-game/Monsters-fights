@@ -24,7 +24,7 @@
     "exactOptionalPropertyTypes": false,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
-    "importHelpers": true,
+    "importHelpers": false,
     "incremental": true,
     "inlineSources": true,
     "isolatedModules": true,
@@ -53,9 +53,10 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "sourceMap": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": false
   },
   "include": [
     "**/*"
   ]
 }
+

@@ -69,6 +69,20 @@ export default class Validation {
   }
 
   /**
+   * Validate if element is boolean
+   * Require param: any
+   */
+  isBoolean(): this {
+    const { v, name } = this;
+
+    if (typeof v !== 'boolean') {
+      throw new errors.IncorrectArgTypeError(`${name} should be boolean`);
+    }
+
+    return this;
+  }
+
+  /**
    * Validate if element is typeof array
    * Require param: array of strings
    */
@@ -198,7 +212,7 @@ export default class Validation {
 
   /**
    * Validate if element has more children than x
-   * Require param: array of strings
+   * Require param: array
    */
   minElements(amount: number): this {
     const { v, name } = this;

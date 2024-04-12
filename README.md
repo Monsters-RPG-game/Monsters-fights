@@ -8,13 +8,6 @@
 npm install / yarn
 ```
 
-### Prepare environment
-
-```shell
-npm run prepareHooks / yarn prepareHooks
-chmod +x .husky/pre-commit
-```
-
 ## 2. How to build
 
 ```shell

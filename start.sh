@@ -1,4 +1,4 @@
 #!/bin/bash
 echo "Starting service"
 
-npm run start
+npm run start:testDev

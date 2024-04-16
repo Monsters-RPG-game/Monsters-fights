@@ -1,4 +1,8 @@
 #!/bin/bash
 echo "Starting service"
 
-npm run start:testDev
+if [ "$NODE_ENV" = "production" ]; then
+  npm run start
+else
+  npm run start:testDev
+fi

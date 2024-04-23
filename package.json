@@ -8,9 +8,9 @@
   "private": false,
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/main.js",
-    "start:dev": "concurrently 'npm run build:watch' 'cross-env NODE_ENV=dev TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true nodemon build/src/main.js'",
+    "start:dev": "cross-env NODE_ENV=dev tsx src/main.ts",
     "start:testDev": "cross-env NODE_ENV=testDev node src/main.js",
-    "start:test": "cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true ts-node src/main.ts",
+    "start:test": "cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true tsx src/main.ts",
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "cross-env NODE_ENV=development eslint . --ext .ts --fix",
@@ -44,7 +44,6 @@
     "@types/node": "^20.10.3",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "7.7.1",
-    "concurrently": "^8.0.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^9.0.0",
@@ -57,7 +56,8 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.1.0",
     "ts-jest": "^29.0.3",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.2",
     "typescript": "5.4.5"
   }
 }

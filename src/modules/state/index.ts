@@ -1,4 +1,3 @@
-import type { ILeaveFightDto } from '../fights/leave/types';
 import type { IFullFight } from '../fights/types';
 
 export default class State {
@@ -21,12 +20,12 @@ export default class State {
     this.fights.push(data);
 
     this.cleaner[data.attacker.toString()] = setTimeout(() => {
-      this.leave({ user: data.attacker.toString() });
+      this.leave(data.attacker.toString());
     }, 20 * 60000);
   }
 
-  leave(data: ILeaveFightDto): void {
-    this.fights = this.fights.filter((f) => f.attacker.toString() !== data.user);
+  leave(user: string): void {
+    this.fights = this.fights.filter((f) => f.attacker.toString() !== user);
   }
 
   get(user: string): IFullFight | undefined {

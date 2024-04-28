@@ -8,6 +8,10 @@ export const stateBody = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: [false, 'Character not provided'],
     },
+    stats: {
+      type: mongoose.Types.ObjectId,
+      required: [false, 'Stats not provided'],
+    },
     hp: {
       type: Number,
       required: [true, 'Hp not provided'],
@@ -18,7 +22,11 @@ export const stateBody = new mongoose.Schema(
 
 export const stateTeamBody = new mongoose.Schema(
   {
-    teams: {
+    enemy: {
+      type: [stateBody],
+      default: [],
+    },
+    attacker: {
       type: [stateBody],
       default: [],
     },
@@ -28,11 +36,11 @@ export const stateTeamBody = new mongoose.Schema(
 
 export const stateSchema = new mongoose.Schema({
   initialized: {
-    type: [stateTeamBody],
+    type: stateTeamBody,
     default: [],
   },
   current: {
-    type: [stateTeamBody],
+    type: stateTeamBody,
     default: [],
   },
 });

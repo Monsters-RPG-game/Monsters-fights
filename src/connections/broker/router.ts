@@ -1,6 +1,7 @@
 import * as enums from '../../enums';
 import * as errors from '../../errors';
 import FightsController from '../../modules/fights/handler';
+import Log from '../../tools/logger';
 import type * as types from '../../types';
 
 export default class Router {
@@ -15,6 +16,9 @@ export default class Router {
   }
 
   async handleMessage(payload: types.IRabbitMessage): Promise<void> {
+    Log.log('Server', 'Got new message');
+    Log.log('Server', JSON.stringify(payload));
+
     switch (payload.target) {
       case enums.EMessageTargets.Fight:
         return this.fightsMessage(payload);

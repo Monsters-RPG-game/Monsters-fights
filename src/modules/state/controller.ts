@@ -10,11 +10,11 @@ export default class State extends ControllerFactory<EModules.States> {
     super(new Rooster(StateModel));
   }
 
-  getFromDb(id: string): Promise<IStateEntity | null> {
+  get(id: string): Promise<IStateEntity | null> {
     return this.rooster.get(id);
   }
 
-  getManyFromDb(id: string[]): Promise<IStateEntity[]> {
+  getMany(id: string[]): Promise<IStateEntity[]> {
     return this.rooster.getMany(id);
   }
 

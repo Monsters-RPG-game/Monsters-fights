@@ -10,13 +10,21 @@ import { IFightEntity } from '../../../src/modules/fights/entity';
 import { ICreateFightDto } from '../../../src/modules/fights/create/types';
 import { IGetFightDto } from '../../../src/modules/fights/get/types';
 import { IStateTeam } from '../../../src/modules/state/types';
+import { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { IFightCharacterEntity } from '../../../src/types/characters';
 
 describe('Fights', () => {
   const db = new FakeFactory();
   const fakeFight = fakeData.fights[0] as IFightEntity;
+  const fakeStats = fakeData.stats[0] as IStatsEntity;
+  const fightCharacter: IFightCharacterEntity = {
+    _id: fakeFight.attacker,
+    lvl: fakeStats.lvl,
+    stats: fakeStats.stats,
+  };
   const create: ICreateFightDto = {
-    attacker: fakeFight.attacker,
-    teams: [[], [{ character: '65edaf46f08f4b4b8030ff38', hp: 10 }]],
+    attacker: fightCharacter,
+    teams: [[], [{ character: fightCharacter, hp: 10, stats: fakeStats._id }]],
   };
   const get: IGetFightDto = {
     owner: fakeFight.attacker,
@@ -77,12 +85,12 @@ describe('Fights', () => {
     describe('Incorrect data', () => {
       it(`Create fight - attacker incorrect type`, async () => {
         const clone = structuredClone(create);
-        clone.attacker = 'asd';
+        clone.attacker = 'asd' as unknown as IFightCharacterEntity;
 
         try {
           await createController.createFight(clone);
         } catch (err) {
-          expect(err).toEqual(new errors.IncorrectArgTypeError('attacker should be objectId'));
+          expect(err).toEqual(new errors.MissingArgError('character'));
         }
       });
 

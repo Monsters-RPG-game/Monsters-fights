@@ -45,36 +45,56 @@
     {
       "_id": "65edc7bcefd4ecbb6ca8d694",
       "initialized": {
-        "teams": [
-          [
-            {
-              "character": "65ed8d7746df2cc0f50926ab",
-              "hp": 10
-            }
-          ],
-          [
-            {
-              "character": "65edaf46f08f4b4b8030ff38",
-              "hp": 10
-            }
-          ]
+        "attacker": [
+          {
+            "character": "65ed8d7746df2cc0f50926ab",
+            "stats": "65edc7bcefd4ecbb6ca8d671",
+            "hp": 10
+          }
+        ],
+        "enemy": [
+          {
+            "character": "65edaf46f08f4b4b8030ff38",
+            "stats": "65edc7bcefd4ecbb6ca8d672",
+            "hp": 10
+          }
         ]
       },
       "current": {
-        "teams": [
-          [
-            {
-              "character": "65ed8d7746df2cc0f50926ab",
-              "hp": 8
-            }
-          ],
-          [
-            {
-              "character": "65edaf46f08f4b4b8030ff38",
-              "hp": 5
-            }
-          ]
+        "attacker": [
+          {
+            "character": "65ed8d7746df2cc0f50926ab",
+            "stats": "65edc7bcefd4ecbb6ca8d671",
+            "hp": 8
+          }
+        ],
+        "enemy": [
+          {
+            "character": "65edaf46f08f4b4b8030ff38",
+            "stats": "65edc7bcefd4ecbb6ca8d672",
+            "hp": 5
+          }
         ]
+      }
+    }
+  ],
+  "stats": [
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d671",
+      "character": "65ed8d7746df2cc0f50926ab",
+      "lvl": 1,
+      "stats": {
+        "intelligence": 1,
+        "strength": 1
+      }
+    },
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d672",
+      "character": "65edaf46f08f4b4b8030ff38",
+      "lvl": 1,
+      "stats": {
+        "intelligence": 1,
+        "strength": 1
       }
     }
   ]

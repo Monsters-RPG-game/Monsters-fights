@@ -37,9 +37,9 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       _id: id,
     };
 
-    const logs = await this.logs.getFromDb(id);
+    const logs = await this.logs.get(id);
 
-    if (logs && logs.logs.length > 0) {
+    if (logs && logs?.logs.length > 0) {
       preparedLogs.logs = await Promise.all(
         logs.logs.map(async (l) => {
           return {

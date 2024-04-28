@@ -4,4 +4,5 @@ export enum EModules {
   Fights = 'fights',
   Logs = 'logs',
   States = 'states',
+  Stats = 'stats',
 }

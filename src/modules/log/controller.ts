@@ -9,7 +9,7 @@ export default class Logs extends ControllerFactory<EModules.Logs> {
     super(new Rooster(LogsModel));
   }
 
-  getFromDb(id: string): Promise<ILogEntity | null> {
+  get(id: string): Promise<ILogEntity | null> {
     return this.rooster.get(id);
   }
 

@@ -1,5 +1,15 @@
-import type { IStateTeam } from '../entity';
+export interface ICreateStateTeam {
+  character: string;
+  stats: string;
+  hp: number;
+}
+
+export interface ICreateStateBodyTeam {
+  enemy: ICreateStateTeam[];
+  attacker: ICreateStateTeam[];
+}
 
 export interface ICreateStateDto {
-  teams: IStateTeam[][];
+  initialized: ICreateStateBodyTeam;
+  current: ICreateStateBodyTeam;
 }

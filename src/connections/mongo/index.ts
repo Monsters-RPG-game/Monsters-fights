@@ -21,7 +21,7 @@ export default class Mongo {
 
   private async startServer(): Promise<void> {
     await mongoose.connect(getConfig().mongoURI, {
-      dbName: 'Messages',
+      dbName: 'Fights',
     } as ConnectOptions);
     Log.log('Mongo', 'Started server');
   }

@@ -2,6 +2,7 @@ import type { IFightEntity } from './entity';
 import type { IActionEntity } from '../actions/entity';
 import type { ILogEntity } from '../log/entity';
 import type { IStateEntity } from '../state/entity';
+import type { IFightState } from '../state/types';
 import type mongoose from 'mongoose';
 
 export interface IFullFightLogs extends ILogEntity {
@@ -10,7 +11,7 @@ export interface IFullFightLogs extends ILogEntity {
 
 export interface IFullFight extends IFightEntity {
   _id: string;
-  states: IStateEntity;
+  states: IFightState;
   start: string;
   finish: string;
 }

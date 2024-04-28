@@ -7,8 +7,10 @@ import State from '../../../tools/state';
 import ActionsController from '../../actions/controller';
 import LogsController from '../../log/controller';
 import StatesController from '../../state/controller';
+import StatsController from '../../stats/controller';
 import Fight from '../model';
 import Rooster from '../rooster';
+import { prepareFight, prepareStatsToSave } from '../utils';
 import type { IAttackDto } from './types';
 import type { EModules } from '../../../enums';
 import type { IActionEntity } from '../../actions/entity';
@@ -24,12 +26,14 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   private readonly _log: LogsController;
 
   private readonly _actions: ActionsController;
+  private readonly _stats: StatsController;
 
   constructor() {
     super(new Rooster(Fight));
     this._states = new StatesController();
     this._log = new LogsController();
     this._actions = new ActionsController();
+    this._stats = new StatsController();
   }
 
   private get states(): StatesController {
@@ -38,6 +42,10 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
   private get logs(): LogsController {
     return this._log;
+  }
+
+  private get stats(): StatsController {
+    return this._stats;
   }
 
   private get actions(): ActionsController {
@@ -51,29 +59,33 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const payload = new AttackDto(data);
     Log.log('Attack', 'Got new attack:', payload);
 
-    let fight = State.cache.get(userId);
+    let fight = await State.redis.getFight(userId);
 
     if (!fight) {
       const dbFight = await this.rooster.getActiveByUser(userId);
       if (!dbFight) throw new UserNotInFight();
-      const dbState = await this.states.getFromDb(dbFight?.states);
+      const dbState = await this.states.get(dbFight?.states);
+      const characters: string[] = [];
+      dbState?.current.attacker.forEach((a) => {
+        characters.push(a.character);
+      });
+      dbState?.current.enemy.forEach((a) => {
+        characters.push(a.character);
+      });
+      const dbStats = await this.stats.getMany({ characters });
 
-      State.cache.create({ ...dbFight, states: dbState as IStateEntity });
-      fight = State.cache.get(userId) as IFullFight;
+      const prepared = prepareFight(dbFight, dbState as IStateEntity, dbStats);
+
+      await State.redis.addFight(userId, prepared);
+      fight = prepared;
     }
 
     const actions: Omit<IActionEntity, '_id'>[] = [];
-    const enemyTeam = fight.states.current.teams.find((t) => {
-      const characters = t.map((ch) => ch.character.toString());
-      return !characters.includes(userId);
-    }) as IStateTeam[];
-    const playerTeam = fight.states.current.teams.find((t) => {
-      const characters = t.map((ch) => ch.character.toString());
-      return characters.includes(userId);
-    }) as IStateTeam[];
+    const enemyTeam = fight.states.current.enemy;
+    const playerTeam = fight.states.current.attacker;
 
-    const target = enemyTeam.find((e) => e.character.toString() === payload.target);
-    const player = playerTeam.find((e) => e.character.toString() === userId) as IStateTeam;
+    const target = enemyTeam.find((e) => e.character._id === payload.target);
+    const player = playerTeam.find((e) => e.character._id === userId) as IStateTeam;
     if (!target) throw new IncorrectAttackTarget();
 
     // Hardcoded attack value
@@ -81,7 +93,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     actions.push({
       character: userId,
       action: EAction.Attack,
-      target: target.character,
+      target: target.character._id,
       value: -5,
     });
 
@@ -97,7 +109,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       // Attack player
       player.hp = player.hp - 2;
       actions.push({
-        character: e.character,
+        character: e.character._id,
         action: EAction.Attack,
         target: userId,
         value: -2,
@@ -113,21 +125,22 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
     const phase = await this.updateDependencies(fight, actions);
     await this.startNextPhase(fight._id.toString(), phase);
+    await State.redis.updateFight(fight.attacker, fight);
     return { logs: actions, status: EFightStatus.Ongoing };
   }
 
   private async finishFight(fight: IFullFight, actions: Omit<IActionEntity, '_id'>[], user: string): Promise<void> {
     await this.updateDependencies(fight, actions);
 
-    State.cache.leave({ user });
+    await State.redis.removeFight(user);
     await this.rooster.update(fight._id.toString(), { active: false });
   }
 
   private async updateDependencies(fight: IFullFight, actions: Omit<IActionEntity, '_id'>[]): Promise<number> {
-    await this.states.update(fight.states._id.toString(), fight.states);
+    await this.states.update(fight.states._id.toString(), prepareStatsToSave(fight.states));
     const ids = await Promise.all(actions.map(async (a) => this.actions.add(a)));
 
-    const fightLogs = (await this.logs.getFromDb(fight.log.toString())) as ILogEntity;
+    const fightLogs = (await this.logs.get(fight.log.toString())) as ILogEntity;
     await this.logs.update(fightLogs._id.toString(), {
       logs: [
         ...fightLogs.logs,

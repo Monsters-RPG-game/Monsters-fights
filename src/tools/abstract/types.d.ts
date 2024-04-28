@@ -13,12 +13,17 @@ import type StatesController from '../../modules/state/controller/';
 import type { ICreateStateDto } from '../../modules/state/create/types';
 import type { IStateEntity } from '../../modules/state/entity';
 import type StatesRooster from '../../modules/state/rooster';
+import type StatsController from '../../modules/stats/controller/';
+import type { ICreateStatsDto } from '../../modules/stats/create/types';
+import type { IStatsEntity } from '../../modules/stats/entity';
+import type StatsRooster from '../../modules/stats/rooster';
 
 export interface IModulesHandlers {
   [EModules.Fights]: FightsController;
   [EModules.Logs]: LogsController;
   [EModules.States]: StatesController;
   [EModules.Actions]: ActionsController;
+  [EModules.Stats]: StatsController;
 }
 
 export interface IModulesControllers {
@@ -26,13 +31,15 @@ export interface IModulesControllers {
   [EModules.Logs]: LogsRooster;
   [EModules.States]: StatesRooster;
   [EModules.Actions]: ActionsRooster;
+  [EModules.Stats]: StatsRooster;
 }
 
 export interface IRoosterAddData {
   [EModules.Fights]: Omit<IFightEntity, '_id' | 'start' | 'finish'>;
   [EModules.Logs]: Omit<ILogEntity, '_id'>;
-  [EModules.States]: Omit<ICreateStateDto, '_id'>;
-  [EModules.Actions]: Omit<ICreateActionDto, '_id'>;
+  [EModules.States]: ICreateStateDto;
+  [EModules.Actions]: ICreateActionDto;
+  [EModules.Stats]: ICreateStatsDto;
 }
 
 export interface IRoosterGetData {
@@ -40,6 +47,7 @@ export interface IRoosterGetData {
   [EModules.Logs]: ILogEntity;
   [EModules.States]: IStateEntity;
   [EModules.Actions]: IActionEntity;
+  [EModules.Stats]: IStatsEntity;
 }
 
 export interface IRoosterGetAllData {
@@ -47,6 +55,7 @@ export interface IRoosterGetAllData {
   [EModules.Logs]: ILogEntity[];
   [EModules.States]: IStateEntity[];
   [EModules.Actions]: IActionEntity[];
+  [EModules.Stats]: IStatsEntity[];
 }
 
 export interface IRoosterUpdate {
@@ -54,6 +63,7 @@ export interface IRoosterUpdate {
   [EModules.Logs]: Partial<ILogEntity>;
   [EModules.States]: Partial<IStateEntity>;
   [EModules.Actions]: Partial<IActionEntity>;
+  [EModules.Stats]: Partial<IStatsEntity>;
 }
 
 interface IRoosterFactory<Z extends EModules> {

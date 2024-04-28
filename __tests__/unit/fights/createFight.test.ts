@@ -3,11 +3,22 @@ import * as errors from '../../../src/errors';
 import { ICreateFightDto } from '../../../src/modules/fights/create/types';
 import CreateFightDto from '../../../src/modules/fights/create/dto';
 import { IStateTeam } from '../../../src/modules/state/types';
+import type { IFightCharacterEntity } from '../../../src/types/characters';
+import fakeData from '../../utils/fakeData.json';
+import { IFightEntity } from '../../../src/modules/fights/entity';
+import { IStatsEntity } from '../../../src/modules/stats/entity';
 
 describe('Fights - create', () => {
+  const fakeFight = fakeData.fights[0] as IFightEntity;
+  const fakeStats = fakeData.stats[0] as IStatsEntity;
+  const fightCharacter: IFightCharacterEntity = {
+    _id: fakeFight.attacker,
+    lvl: fakeStats.lvl,
+    stats: fakeStats.stats,
+  };
   const data: ICreateFightDto = {
-    teams: [[], [{ character: '63e55edbe8a800060911121d', hp: 10 }]],
-    attacker: '63e55edbe8a800060911121e',
+    teams: [[], [{ character: fightCharacter, hp: 10, stats: fakeStats._id }]],
+    attacker: fightCharacter,
   };
 
   describe('Should throw', () => {
@@ -60,7 +71,7 @@ describe('Fights - create', () => {
 
       it(`Attacker incorrect type`, () => {
         const clone = structuredClone(data);
-        clone.attacker = 'asd';
+        clone.attacker = 'asd' as unknown as IFightCharacterEntity;
 
         try {
           new CreateFightDto(clone);

@@ -10,7 +10,6 @@ import type { IAttackDto } from './attack/types';
 import type { ICreateFightDto } from './create/types';
 import type { IGetFightDto } from './get/types';
 import type { IGetLogsDto } from './getLogs/types';
-import type { ILeaveFightDto } from './leave/types';
 import type { EModules } from '../../enums';
 import type { ILocalUser } from '../../types';
 
@@ -54,8 +53,8 @@ export default class UserHandler extends HandlerFactory<EModules.Fights> {
     return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
   }
 
-  async leave(payload: unknown, user: ILocalUser): Promise<void> {
-    const data = await this.leaveController.leaveFight(payload as ILeaveFightDto);
+  async leave(_payload: unknown, user: ILocalUser): Promise<void> {
+    const data = await this.leaveController.leaveFight(user.userId);
     return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
   }
 

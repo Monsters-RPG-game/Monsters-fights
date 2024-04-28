@@ -1,12 +1,13 @@
 import type Broker from '../connections/broker';
-import type StateController from '../modules/state';
+import type Redis from '../connections/redis';
 
 export interface IState {
   broker: Broker;
-  cache: StateController;
+  redis: Redis;
 }
 
 export interface IConfigInterface {
   amqpURI: string;
+  redisURI: string;
   mongoURI: string;
 }

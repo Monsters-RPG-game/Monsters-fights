@@ -2,7 +2,7 @@ import type { IState } from '../types';
 
 const State: IState = {
   broker: null!,
-  cache: null!,
+  redis: null!,
 };
 
 export default State;

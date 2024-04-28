@@ -10,21 +10,31 @@ import FakeFactory from '../../utils/fakeFactory/src';
 import { IFightEntity } from '../../../src/modules/fights/entity';
 import { ICreateFightDto } from '../../../src/modules/fights/create/types';
 import { IGetFightDto } from '../../../src/modules/fights/get/types';
-import { ILeaveFightDto } from '../../../src/modules/fights/leave/types';
+import type { IFightCharacterEntity } from '../../../src/types/characters';
+import { IStatsEntity } from '../../../src/modules/stats/entity';
 
 describe('Fights', () => {
   const db = new FakeFactory();
   const fakeFight = fakeData.fights[0] as IFightEntity;
+  const fakeStats = fakeData.stats[0] as IStatsEntity;
+  const fightCharacter: IFightCharacterEntity = {
+    _id: fakeFight.attacker,
+    lvl: fakeStats.lvl,
+    stats: fakeStats.stats,
+  };
   const create: ICreateFightDto = {
-    attacker: fakeFight.attacker,
-    teams: [[], [{ character: '65edaf46f08f4b4b8030ff38', hp: 10 }]],
+    attacker: fightCharacter,
+    teams: [[], [{
+      character: fightCharacter, hp: 10,
+      stats: fakeStats._id,
+    }]],
   };
   const get: IGetFightDto = {
     owner: fakeFight.attacker,
     active: true,
     page: 1,
   };
-  const leave: ILeaveFightDto = {
+  const leave = {
     user: fakeFight.attacker,
   };
 
@@ -50,36 +60,10 @@ describe('Fights', () => {
     await mongoose.connection.close();
   });
 
-  describe('Should throw', () => {
-    describe('No data passed', () => {
-      it(`Leave fight - missing user`, () => {
-        const clone = structuredClone(leave);
-        clone.user = undefined!;
-
-        leaveController.leaveFight(clone).catch((err) => {
-          expect(err).toEqual(new errors.MissingArgError('user'));
-        });
-      });
-    });
-
-    describe('Incorrect data', () => {
-      it(`Leave fight - user incorrect type`, async () => {
-        const clone = structuredClone(leave);
-        clone.user = 'asd';
-
-        try {
-          await leaveController.leaveFight(clone);
-        } catch (err) {
-          expect(err).toEqual(new errors.IncorrectArgTypeError('user should be objectId'));
-        }
-      });
-    });
-  });
-
   describe('Should pass', () => {
     it(`Leave`, async () => {
       await createController.createFight(create);
-      await leaveController.leaveFight(leave);
+      await leaveController.leaveFight(leave.user);
 
       try {
         await getController.get(get);

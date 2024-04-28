@@ -4,4 +4,5 @@ export enum EFakeData {
   Fights = 'fights',
   Logs = 'logs',
   States = 'states',
+  Stats = 'stats',
 }

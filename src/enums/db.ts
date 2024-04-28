@@ -4,4 +4,5 @@ export enum EDbCollections {
   Log = 'log',
   State = 'state',
   Action = 'action',
+  Stats = 'stats',
 }

@@ -1,9 +1,8 @@
 import TemplateFactory from './abstracts';
 import { EFakeData } from '../enums';
 import type { IAbstractBody } from '../types/data';
-import { IStateEntity } from '../../../../src/modules/state/entity';
+import { IStateBodyTeamEntity, IStateEntity } from '../../../../src/modules/state/entity';
 import State from '../../../../src/modules/state/model';
-import type { IStateTeam } from '../../../../src/modules/state/types';
 
 export default class FakeState extends TemplateFactory<EFakeData.States> implements IAbstractBody<IStateEntity> {
   constructor() {
@@ -15,20 +14,20 @@ export default class FakeState extends TemplateFactory<EFakeData.States> impleme
     return this;
   }
 
-  initialized(initialized: { teams: IStateTeam[][] }): this {
+  initialized(initialized: IStateBodyTeamEntity): this {
     this.state.initialized = initialized;
     return this;
   }
 
-  current(current: { teams: IStateTeam[][] }): this {
+  current(current: IStateBodyTeamEntity): this {
     this.state.current = current;
     return this;
   }
 
   protected override fillState(): void {
     this.state = {
-      initialized: { teams: [] },
-      current: { teams: [] },
+      initialized: { attacker: [], enemy: [] },
+      current: { attacker: [], enemy: [] },
     };
   }
 }

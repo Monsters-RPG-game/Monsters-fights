@@ -46,6 +46,7 @@ jobs:
           mkdir -p config
           echo '{
             "amqpURI": "rabbitUrl",
+            "redisURI": "redisUrl",
             "mongoURI": "mongoUrl"
           }' > config/devConfig.json
           cp config/devConfig.json config/prodConfig.json
@@ -58,7 +59,7 @@ jobs:
           path: config/
 
   test:
-    needs: [setup-config]
+    needs: [ setup-config ]
     runs-on: ubuntu-latest
 
     container:
@@ -89,7 +90,7 @@ jobs:
         run: apt-get update && apt-get install gdebi-core -y && wget http://ftp.us.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb && gdebi --non-interactive libssl1.1_1.1.1w-0+deb11u1_amd64.deb && yarn test:e2e && yarn test:unit && yarn test:db
 
   lint:
-    needs: [setup-config]
+    needs: [ setup-config ]
     runs-on: ubuntu-latest
 
     container:
@@ -120,7 +121,7 @@ jobs:
         run: npm run lint
 
   build:
-    needs: [setup-config, test, lint]
+    needs: [ setup-config, test, lint ]
 
     runs-on: ubuntu-latest
 

@@ -1,6 +1,6 @@
 import Broker from './connections/broker';
 import Mongo from './connections/mongo';
-import StateController from './modules/state';
+import Redis from './connections/redis';
 import Liveness from './tools/liveness';
 import Log from './tools/logger';
 import State from './tools/state';
@@ -29,6 +29,9 @@ class App {
 
   kill(): void {
     State.broker.close();
+    State.redis.close().catch((err) => {
+      Log.error('Redis', 'Could not kill redis', (err as Error).message, (err as Error).stack);
+    });
 
     Log.log('Server', 'Server closed');
   }
@@ -36,10 +39,11 @@ class App {
   private async start(): Promise<void> {
     const mongo = new Mongo();
     State.broker = new Broker();
-    State.cache = new StateController();
+    State.redis = new Redis();
 
-    await mongo.init();
     State.broker.init();
+    await mongo.init();
+    await State.redis.init();
     Log.log('Server', 'Server started');
 
     this.liveness = new Liveness();

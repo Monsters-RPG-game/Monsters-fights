@@ -1,7 +1,16 @@
-import type { IStateTeam } from './types';
+export interface IStateTeamEntity {
+  character: string;
+  stats: string;
+  hp: number;
+}
+
+export interface IStateBodyTeamEntity {
+  enemy: IStateTeamEntity[];
+  attacker: IStateTeamEntity[];
+}
 
 export interface IStateEntity {
   _id: string;
-  initialized: { teams: IStateTeam[][] };
-  current: { teams: IStateTeam[][] };
+  initialized: IStateBodyTeamEntity;
+  current: IStateBodyTeamEntity;
 }

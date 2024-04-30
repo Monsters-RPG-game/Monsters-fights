@@ -164,6 +164,7 @@ export default class Broker {
 
   private errorWrapper(func: () => Promise<void>, user: string): void {
     func().catch((err) => {
+      Log.error('Err wrapper', (err as Error).message, (err as Error).stack);
       const { message, name, code, status } = err as FullError;
       if (!status) {
         this.send(user, { message, name, code, status: 500 }, enums.EMessageTypes.Error);

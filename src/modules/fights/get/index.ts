@@ -48,7 +48,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const dbFight = await this.rooster.getByUser(payload.owner, payload.page);
     if (dbFight.length === 0) return [];
 
-    const dbState = await this.state.getManyFromDb(dbFight.map((f) => f.states.toString()));
+    const dbState = await this.state.getMany(dbFight.map((f) => f.states.toString()));
     const logs = await Promise.all(dbFight.map(async (f) => this.prepareLogs(f.log.toString())));
 
     dbFight.forEach((f) => {
@@ -63,19 +63,19 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   }
 
   private async getActive(payload: GetFightDto): Promise<IFightReport[]> {
-    const fight = State.cache.get(payload.owner) as IFullFight;
+    const fight = (await State.redis.getFight(payload.owner)) as IFullFight;
 
     if (!fight) {
       const dbFight = await this.rooster.getActiveByUser(payload.owner);
 
       if (!dbFight) throw new UserNotInFight();
-      const dbState = await this.state.getFromDb(dbFight?.states.toString());
+      const dbState = await this.state.get(dbFight?.states.toString());
       const logs = await this.prepareLogs(dbFight.log);
 
       return [{ ...dbFight, _id: dbFight._id.toString(), states: dbState as IStateEntity, log: logs }];
     }
 
-    const dbState = await this.state.getFromDb(fight?.states._id);
+    const dbState = await this.state.get(fight?.states._id);
     const logs = await this.prepareLogs(fight.log);
 
     return [{ ...fight, _id: fight._id.toString(), states: dbState as IStateEntity, log: logs }];
@@ -87,7 +87,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       _id: id,
     };
 
-    const logs = (await this.logs.getFromDb(id)) as ILogEntity;
+    const logs = (await this.logs.get(id)) as ILogEntity;
 
     if (logs.logs.length > 0) {
       preparedLogs.logs = await Promise.all(

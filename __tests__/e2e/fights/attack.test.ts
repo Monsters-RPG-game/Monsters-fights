@@ -10,15 +10,26 @@ import { IStateEntity } from '../../../src/modules/state/entity';
 import { IFightEntity } from '../../../src/modules/fights/entity';
 import { IAttackDto } from '../../../src/modules/fights/attack/types';
 import { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { IFightCharacterEntity } from '../../../src/types/characters';
+import { IStatsEntity } from '../../../src/modules/stats/entity';
 
 describe('Fights', () => {
   const db = new FakeFactory();
   const fakeFight = fakeData.fights[0] as IFightEntity;
   const fakeState = fakeData.states[0] as IStateEntity;
-  const attack: IAttackDto = { target: fakeState.current.teams[1]![0]!.character };
+  const fakeStats = fakeData.stats[0] as IStatsEntity;
+  const attack: IAttackDto = { target: fakeState.current.attacker[0]!.character };
+  const fightCharacter: IFightCharacterEntity = {
+    _id: fakeFight.attacker,
+    lvl: fakeStats.lvl,
+    stats: fakeStats.stats,
+  };
   const create: ICreateFightDto = {
-    attacker: fakeFight.attacker,
-    teams: [[], [{ character: '65edaf46f08f4b4b8030ff38', hp: 10 }]],
+    attacker: fightCharacter,
+    teams: [[], [{
+      character: fightCharacter, hp: 10,
+      stats: fakeStats._id,
+    }]],
   };
 
   let attackController = new AttackController();

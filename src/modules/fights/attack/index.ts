@@ -37,8 +37,6 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     this._stats = new StatsController();
   }
 
-  // serv -> busin lg->repo   -controler
-  // repo -> db    ---roostert
   private get states(): StatesController {
     return this._states;
   }
@@ -159,9 +157,6 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     if (attackerStr > targetStr) {
       mod += attackerStr - targetStr;
     }
-    if (mod === 0) {
-      mod = 0;
-    }
     if (mod > 0) {
       mod *= itemPower;
     }
@@ -212,6 +207,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       });
     });
   }
+
   private async initializeFight(userId: string): Promise<IFullFight> {
     const dbFight = await this.rooster.getActiveByUser(userId);
     if (!dbFight) throw new UserNotInFight();

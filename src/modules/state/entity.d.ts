@@ -1,7 +1,6 @@
 export interface IStateTeamEntity {
   character: string;
   stats: string;
-  hp: number;
 }
 
 export interface IStateBodyTeamEntity {

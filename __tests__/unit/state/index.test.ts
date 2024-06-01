@@ -29,8 +29,8 @@ describe('State', () => {
     start: Date.now().toString(),
     finish: Date.now().toString(),
     states: {
-      initialized: { attacker: [], enemy: [{ character: fightCharacter, hp: 10, stats: fakeStats._id }] },
-      current: { attacker: [], enemy: [{ character: fightCharacter, hp: 10, stats: fakeStats._id }] },
+      initialized: { attacker: [], enemy: [{ character: fightCharacter, stats: fakeStats._id }] },
+      current: { attacker: [], enemy: [{ character: fightCharacter, stats: fakeStats._id }] },
       _id: fightId,
     },
     _id: fightId,

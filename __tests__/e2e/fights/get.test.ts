@@ -25,7 +25,7 @@ describe('Fights', () => {
   };
   const create: ICreateFightDto = {
     attacker: fightCharacter,
-    teams: [[], [{ character: fightCharacter, hp: 10, stats: fakeStats._id }]],
+    teams: [[], [{ character: fightCharacter, stats: fakeStats._id }]],
   };
   const get: IGetFightDto = {
     owner: fakeFight.attacker,

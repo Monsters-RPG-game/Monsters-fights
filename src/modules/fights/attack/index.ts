@@ -17,7 +17,6 @@ import type { IActionEntity } from '../../actions/entity';
 import type { ILogEntity } from '../../log/entity';
 import type { IStateEntity } from '../../state/entity';
 import type { IStateTeam } from '../../state/types';
-import type { IStatsEntity } from '../../stats/entity';
 import type { IFullFight } from '../types';
 import type { Omit } from 'yargs';
 
@@ -60,7 +59,6 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const payload = new AttackDto(data);
     Log.log('Attack', 'Got new attack:', payload);
     let fight = await State.redis.getFight(userId);
-
     if (!fight) {
       fight = await this.initializeFight(userId);
     }
@@ -69,21 +67,15 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const enemyTeam = fight.states.current.enemy;
     const playerTeam = fight.states.current.attacker;
 
+    const player = playerTeam[0]!;
     const target = enemyTeam.find((e) => e.character._id === payload.target);
-    const player = playerTeam.find((e) => e.character._id === userId) as IStateTeam;
     if (!target) throw new IncorrectAttackTarget();
 
-    const enemyIds = enemyTeam.flatMap((e) => e.character._id);
-    const enemyStats = await this.stats.getMany({ characters: enemyIds });
-    const playerStats = await this.stats.getMany({ characters: [userId] });
-
-    const targetEnemyStats = enemyStats.find((e) => e.character.toString() === payload.target)?.stats;
-
-    const playermodifier = this.calculateModifiers(1, playerStats[0]!.stats.strength, targetEnemyStats!.strength);
-    const playerdamage = this.calculateBaseMeleeDamage(playerStats[0]!.stats.strength, playermodifier);
+    const playermodifier = this.calculateModifiers(1, player.character.stats.strength, target.character.stats.strength);
+    const playerdamage = this.calculateBaseMeleeDamage(player.character.stats.strength, playermodifier);
 
     // player attack
-    this.applyDamage(target, playerdamage!);
+    await this.applyDamage(target, playerdamage!);
 
     actions.push({
       character: userId,
@@ -91,7 +83,8 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       target: target.character._id,
       value: -5,
     });
-    const aliveEnemies = enemyTeam.filter((ch) => ch.hp > 0);
+
+    const aliveEnemies = this.checkAliveEnemies(enemyTeam);
     if (aliveEnemies.length === 0) {
       Log.debug('Fight', 'All enemies dead');
       await this.finishFight(fight, actions, userId);
@@ -99,15 +92,13 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       return { logs: actions, status: EFightStatus.Win };
     }
 
-    this.enemyLoop({
+    await this.enemyLoop({
       targetCharacter: playerTeam[0]!,
-      targetCharStats: playerStats,
       actions,
-      attackerStats: enemyStats,
       attackerTeam: enemyTeam,
     });
 
-    if (player.hp <= 0) {
+    if (player.character.stats.hp <= 0) {
       Log.debug('Fight', 'Player dead');
       await this.finishFight(fight, actions, userId);
 
@@ -149,9 +140,10 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     await this.rooster.update(fight, { phase: nextPhase });
   }
 
-  // for now we base our calculation on strength difference, later we will change this to some
-  // stat like str to defence/endurance etc
-  // itemPower for now is 1, later we can add equipment with some stats that will increase modifier to damage
+  /** for now we base our calculation on strength difference, later we will change this to some
+   * stat like str to defence/endurance etc
+   * itemPower for now is 1, later we can add equipment with some stats that will increase modifier to damage
+   */
   private calculateModifiers(itemPower: number, attackerStr: number, targetStr: number): number {
     let mod = 0;
     if (attackerStr > targetStr) {
@@ -162,9 +154,15 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     }
     return mod;
   }
+  private checkAliveEnemies(enemy: IStateTeam[]): IStateTeam[] {
+    return enemy.filter((e) => {
+      return e.character.stats.hp > 0;
+    });
+  }
 
-  // base damage is sum of strength and modifier (which is difference between attacker and target strength)
-  // later we can another type of damage like ranged,magic etc
+  /** base damage is sum of strength and modifier (which is difference between attacker and target strength)
+   * later we can another type of damage like ranged,magic etc
+   */
   private calculateBaseMeleeDamage(str: number, modifier: number): IBaseDamage | undefined {
     const dmg: IBaseDamage = {
       dmg: str + modifier,
@@ -172,33 +170,30 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return dmg;
   }
 
-  private applyDamage(char: IStateTeam, base: IBaseDamage): void {
-    char.hp = char.hp - base.dmg;
+  private async applyDamage(char: IStateTeam, base: IBaseDamage): Promise<void> {
+    const newHp = char.character.stats.hp - base.dmg;
+    await this.stats.rooster.update(char.stats, {
+      stats: { ...char.character.stats, hp: newHp },
+    });
     const testmsg = `applied: [${base.dmg}] dmg to character: [${char.character._id}]`;
     Log.log('Attack', testmsg);
   }
 
-  private enemyLoop({
+  private async enemyLoop({
     attackerTeam,
-    attackerStats,
-    targetCharStats,
-    actions,
     targetCharacter,
+    actions,
   }: {
     attackerTeam: IStateTeam[];
-    attackerStats: IStatsEntity[];
-    targetCharStats: IStatsEntity[];
     actions: Omit<IActionEntity, '_id'>[];
     targetCharacter: IStateTeam;
-  }): void {
+  }): Promise<void> {
     const targetCharacterId = targetCharacter.character._id;
-    const targetStats = targetCharStats.find((en) => en.character.toString() === targetCharacterId);
 
-    attackerTeam.forEach((e) => {
-      const enStats = attackerStats.find((en) => en.character.toString() === e.character._id);
-      const mod = this.calculateModifiers(1, enStats!.stats.strength, targetStats!.stats.strength);
-      const enemyDamage = this.calculateBaseMeleeDamage(targetStats!.stats.strength, mod);
-      this.applyDamage(targetCharacter, enemyDamage!);
+    const promises = attackerTeam.map(async (e) => {
+      const mod = this.calculateModifiers(1, e.character.stats.strength, targetCharacter.character.stats.strength);
+      const enemyDamage = this.calculateBaseMeleeDamage(targetCharacter.character.stats.strength, mod);
+      await this.applyDamage(targetCharacter, enemyDamage!);
       actions.push({
         character: e.character._id,
         action: EAction.Attack,
@@ -206,6 +201,8 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
         value: -enemyDamage!.dmg,
       });
     });
+
+    await Promise.all(promises);
   }
 
   private async initializeFight(userId: string): Promise<IFullFight> {
@@ -213,12 +210,15 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     if (!dbFight) throw new UserNotInFight();
     const dbState = await this.states.get(dbFight?.states);
     const characters: string[] = [];
+
     dbState?.current.attacker.forEach((a) => {
       characters.push(a.character);
     });
+
     dbState?.current.enemy.forEach((a) => {
       characters.push(a.character);
     });
+
     const dbStats = await this.stats.getMany({ characters });
     const prepared = prepareFight(dbFight, dbState as IStateEntity, dbStats);
     await State.redis.addFight(userId, prepared);

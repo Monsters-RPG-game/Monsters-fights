@@ -25,7 +25,7 @@ describe('Fights', () => {
   const create: ICreateFightDto = {
     attacker: fightCharacter,
     teams: [[], [{
-      character: fightCharacter, hp: 10,
+      character: fightCharacter,
       stats: fakeStats._id,
     }]],
   };

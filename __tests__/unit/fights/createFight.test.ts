@@ -17,7 +17,7 @@ describe('Fights - create', () => {
     stats: fakeStats.stats,
   };
   const data: ICreateFightDto = {
-    teams: [[], [{ character: fightCharacter, hp: 10, stats: fakeStats._id }]],
+    teams: [[], [{ character: fightCharacter,  stats: fakeStats._id }]],
     attacker: fightCharacter,
   };
 

@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import AttackController from '../../../src/modules/fights/attack';
 import CreateController from '../../../src/modules/fights/create';
 import StateController from '../../../src/modules/state/controller';
+import StatsController from '../../../src/modules/stats/controller';
 import * as errors from '../../../src/errors';
 import fakeData from '../../utils/fakeData.json';
 import FakeFactory from '../../utils/fakeFactory/src';
@@ -42,12 +43,10 @@ describe('Fights', () => {
       [
         {
           character: testEnemy,
-          hp: 10,
           stats: fakeStats._id,
         },
         {
           character: testEnemy2,
-          hp: 20,
           stats: fakeStats3._id,
         },
       ],
@@ -57,6 +56,7 @@ describe('Fights', () => {
   let attackController = new AttackController();
   let createController = new CreateController();
   let stateController = new StateController();
+  let statsController = new StatsController();
 
   beforeAll(async () => {
     const server = await MongoMemoryServer.create();
@@ -69,6 +69,7 @@ describe('Fights', () => {
     attackController = new AttackController();
     createController = new CreateController();
     stateController = new StateController();
+    statsController = new StatsController();
   });
 
   afterAll(async () => {
@@ -116,7 +117,8 @@ describe('Fights', () => {
       try {
         await attackController.attack(testAttack, testPlayer._id);
         const state = await stateController.rooster.getAll(1);
-        expect(state[0]?.current.attacker[0]?.hp).toBe(5);
+        const stats=await statsController.rooster.get(state[0]?.current.enemy[0]?.stats)
+        expect(stats?.stats.hp).toBe(7);
       } catch (err) {
         expect(err).toBeUndefined();
       }

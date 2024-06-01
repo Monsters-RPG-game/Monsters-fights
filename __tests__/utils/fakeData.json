@@ -43,10 +43,7 @@
       "logs": [
         {
           "phase": 1,
-          "actions": [
-            "65edc7d4efd4ecbb6ca8d69d",
-            "65edc7d4efd4ecbb6ca8d69e"
-          ]
+          "actions": ["65edc7d4efd4ecbb6ca8d69d", "65edc7d4efd4ecbb6ca8d69e"]
         }
       ]
     }
@@ -58,15 +55,13 @@
         "attacker": [
           {
             "character": "65ed8d7746df2cc0f50926ab",
-            "stats": "65edc7bcefd4ecbb6ca8d671",
-            "hp": 10
+            "stats": "65edc7bcefd4ecbb6ca8d671"
           }
         ],
         "enemy": [
           {
             "character": "65edaf46f08f4b4b8030ff38",
-            "stats": "65edc7bcefd4ecbb6ca8d672",
-            "hp": 10
+            "stats": "65edc7bcefd4ecbb6ca8d672"
           }
         ]
       },
@@ -74,15 +69,13 @@
         "attacker": [
           {
             "character": "65ed8d7746df2cc0f50926ab",
-            "stats": "65edc7bcefd4ecbb6ca8d671",
-            "hp": 8
+            "stats": "65edc7bcefd4ecbb6ca8d671"
           }
         ],
         "enemy": [
           {
             "character": "65edaf46f08f4b4b8030ff38",
-            "stats": "65edc7bcefd4ecbb6ca8d672",
-            "hp": 5
+            "stats": "65edc7bcefd4ecbb6ca8d672"
           }
         ]
       }
@@ -93,15 +86,13 @@
         "attacker": [
           {
             "character": "65ed8d7746df2cc0f50926ab",
-            "stats": "65edc7bcefd4ecbb6ca8d672",
-            "hp": 10
+            "stats": "65edc7bcefd4ecbb6ca8d672"
           }
         ],
         "enemy": [
           {
             "character": "65edaf46f08f4b4b8030ff38",
-            "stats": "65edc7bcefd4ecbb6ca8d671",
-            "hp": 10
+            "stats": "65edc7bcefd4ecbb6ca8d671"
           }
         ]
       },
@@ -109,15 +100,13 @@
         "attacker": [
           {
             "character": "65ed8d7746df2cc0f50926ab",
-            "stats": "65edc7bcefd4ecbb6ca8d671",
-            "hp": 8
+            "stats": "65edc7bcefd4ecbb6ca8d671"
           }
         ],
         "enemy": [
           {
             "character": "65edaf46f08f4b4b8030ff38",
-            "stats": "65edc7bcefd4ecbb6ca8d672",
-            "hp": 5
+            "stats": "65edc7bcefd4ecbb6ca8d672"
           }
         ]
       }
@@ -130,7 +119,8 @@
       "lvl": 1,
       "stats": {
         "intelligence": 1,
-        "strength": 1
+        "strength": 1,
+        "hp": 10
       }
     },
     {
@@ -139,7 +129,8 @@
       "lvl": 1,
       "stats": {
         "intelligence": 2,
-        "strength": 2
+        "strength": 2,
+        "hp": 10
       }
     },
 
@@ -149,7 +140,8 @@
       "lvl": 3,
       "stats": {
         "intelligence": 2,
-        "strength": 3
+        "strength": 3,
+        "hp": 10
       }
     }
   ]

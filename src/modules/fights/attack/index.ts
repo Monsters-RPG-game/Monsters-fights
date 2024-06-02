@@ -81,7 +81,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       character: userId,
       action: EAction.Attack,
       target: target.character._id,
-      value: -5,
+      value: -playerdamage!.dmg,
     });
 
     const aliveEnemies = this.checkAliveEnemies(enemyTeam);

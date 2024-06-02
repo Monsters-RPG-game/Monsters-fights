@@ -1,16 +1,16 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from '@jest/globals';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import GetController from '../../../src/modules/fights/get';
-import CreateController from '../../../src/modules/fights/create';
 import * as errors from '../../../src/errors';
+import CreateController from '../../../src/modules/fights/create';
+import GetController from '../../../src/modules/fights/get';
 import fakeData from '../../utils/fakeData.json';
 import FakeFactory from '../../utils/fakeFactory/src';
-import { IFightEntity } from '../../../src/modules/fights/entity';
-import { ICreateFightDto } from '../../../src/modules/fights/create/types';
-import { IGetFightDto } from '../../../src/modules/fights/get/types';
-import { IStateTeam } from '../../../src/modules/state/types';
-import { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { IFightEntity } from '../../../src/modules/fights/entity';
+import type { IGetFightDto } from '../../../src/modules/fights/get/types';
+import type { IStateTeam } from '../../../src/modules/state/types';
+import type { IStatsEntity } from '../../../src/modules/stats/entity';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
 
 describe('Fights', () => {
@@ -24,7 +24,7 @@ describe('Fights', () => {
   };
   const create: ICreateFightDto = {
     attacker: fightCharacter,
-    teams: [[], [{ character: fightCharacter, hp: 10, stats: fakeStats._id }]],
+    teams: [[], [{ character: fightCharacter, stats: fakeStats._id }]],
   };
   const get: IGetFightDto = {
     owner: fakeFight.attacker,
@@ -54,7 +54,7 @@ describe('Fights', () => {
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Create fight - missing attack`, () => {
+      it('Create fight - missing attack', () => {
         const clone = structuredClone(create);
         clone.attacker = undefined!;
 
@@ -63,7 +63,7 @@ describe('Fights', () => {
         });
       });
 
-      it(`Create fight - missing teams`, () => {
+      it('Create fight - missing teams', () => {
         const clone = structuredClone(create);
         clone.teams = undefined!;
 
@@ -72,7 +72,7 @@ describe('Fights', () => {
         });
       });
 
-      it(`Create fight - one of teams is missing character`, () => {
+      it('Create fight - one of teams is missing character', () => {
         const clone = structuredClone(create);
         clone.teams = [[], [{ hp: 10 }]] as unknown as [IStateTeam[], IStateTeam[]];
 
@@ -83,7 +83,7 @@ describe('Fights', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Create fight - attacker incorrect type`, async () => {
+      it('Create fight - attacker incorrect type', async () => {
         const clone = structuredClone(create);
         clone.attacker = 'asd' as unknown as IFightCharacterEntity;
 
@@ -94,7 +94,7 @@ describe('Fights', () => {
         }
       });
 
-      it(`Create fight - teams incorrect type`, async () => {
+      it('Create fight - teams incorrect type', async () => {
         const clone = structuredClone(create);
         clone.teams = 'asd' as unknown as [IStateTeam[], IStateTeam[]];
 
@@ -105,7 +105,7 @@ describe('Fights', () => {
         }
       });
 
-      it(`Create fight - no targets provided in enemy team`, async () => {
+      it('Create fight - no targets provided in enemy team', async () => {
         const clone = structuredClone(create);
         clone.teams = [[], []];
 
@@ -116,7 +116,7 @@ describe('Fights', () => {
         }
       });
 
-      it(`Create fight - user already in fight`, async () => {
+      it('Create fight - user already in fight', async () => {
         await db.fight
           .log(fakeFight.log)
           .fightStates(fakeFight.states)
@@ -137,7 +137,7 @@ describe('Fights', () => {
   });
 
   describe('Should pass', () => {
-    it(`Create fight`, async () => {
+    it('Create fight', async () => {
       await createController.createFight(create);
       const fight = await getController.get(get);
 

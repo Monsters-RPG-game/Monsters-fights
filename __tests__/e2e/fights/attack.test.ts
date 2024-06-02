@@ -1,16 +1,17 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from '@jest/globals';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
+import * as errors from '../../../src/errors';
 import AttackController from '../../../src/modules/fights/attack';
 import CreateController from '../../../src/modules/fights/create';
 import StateController from '../../../src/modules/state/controller';
-import * as errors from '../../../src/errors';
+import StatsController from '../../../src/modules/stats/controller';
 import fakeData from '../../utils/fakeData.json';
 import FakeFactory from '../../utils/fakeFactory/src';
-import { IAttackDto } from '../../../src/modules/fights/attack/types';
-import { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { IAttackDto } from '../../../src/modules/fights/attack/types';
+import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { IStatsEntity } from '../../../src/modules/stats/entity';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
-import { IStatsEntity } from '../../../src/modules/stats/entity';
 
 describe('Fights', () => {
   const db = new FakeFactory();
@@ -42,12 +43,10 @@ describe('Fights', () => {
       [
         {
           character: testEnemy,
-          hp: 10,
           stats: fakeStats._id,
         },
         {
           character: testEnemy2,
-          hp: 20,
           stats: fakeStats3._id,
         },
       ],
@@ -57,6 +56,7 @@ describe('Fights', () => {
   let attackController = new AttackController();
   let createController = new CreateController();
   let stateController = new StateController();
+  let statsController = new StatsController();
 
   beforeAll(async () => {
     const server = await MongoMemoryServer.create();
@@ -69,6 +69,7 @@ describe('Fights', () => {
     attackController = new AttackController();
     createController = new CreateController();
     stateController = new StateController();
+    statsController = new StatsController();
   });
 
   afterAll(async () => {
@@ -78,7 +79,7 @@ describe('Fights', () => {
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Attack - missing target`, () => {
+      it('Attack - missing target', () => {
         const clone = structuredClone(testAttack);
         clone.target = undefined!;
 
@@ -89,7 +90,7 @@ describe('Fights', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Attack - target incorrect type`, async () => {
+      it('Attack - target incorrect type', async () => {
         const clone = structuredClone(testAttack);
         clone.target = 'asd';
 
@@ -100,7 +101,7 @@ describe('Fights', () => {
         }
       });
 
-      it(`Attack - not in fight`, async () => {
+      it('Attack - not in fight', async () => {
         try {
           await attackController.attack(testAttack, testPlayer._id);
         } catch (err) {
@@ -111,12 +112,13 @@ describe('Fights', () => {
   });
 
   describe('Should pass', () => {
-    it(`Attack - hp of attacker is 5`, async () => {
+    it('Attack - hp of attacker is 5', async () => {
       await createController.createFight(testCreate);
       try {
         await attackController.attack(testAttack, testPlayer._id);
         const state = await stateController.rooster.getAll(1);
-        expect(state[0]?.current.attacker[0]?.hp).toBe(5);
+        const stats = await statsController.rooster.get(state[0]?.current.enemy[0]?.stats);
+        expect(stats?.stats.hp).toBe(7);
       } catch (err) {
         expect(err).toBeUndefined();
       }

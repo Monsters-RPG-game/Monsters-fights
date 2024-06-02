@@ -52,13 +52,13 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       enemy: payload.teams
         .map((t) => {
           return t.map((character) => {
-            return { character: character.character, hp: 10, stats: '' } as IStateTeam;
+            return { character: character.character, stats: '' } as IStateTeam;
           });
         })
         .flat(),
       attacker: [],
     };
-    state.attacker = [{ character: payload.attacker, hp: 10, stats: '' }];
+    state.attacker = [{ character: payload.attacker, stats: '' }];
 
     const preparedState = await this.prepareState(state);
 

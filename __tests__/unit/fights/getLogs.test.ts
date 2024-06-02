@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import * as errors from '../../../src/errors';
-import { IGetLogsDto } from '../../../src/modules/fights/getLogs/types';
 import GetLogsDto from '../../../src/modules/fights/getLogs/dto';
+import type { IGetLogsDto } from '../../../src/modules/fights/getLogs/types';
 
 describe('Fights - get logs', () => {
   const data: IGetLogsDto = {
@@ -10,7 +10,7 @@ describe('Fights - get logs', () => {
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Missing id`, () => {
+      it('Missing id', () => {
         const clone = structuredClone(data);
         clone.id = undefined!;
 
@@ -23,7 +23,7 @@ describe('Fights - get logs', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Id incorrect type`, () => {
+      it('Id incorrect type', () => {
         const clone = structuredClone(data);
         clone.id = 'bc';
 
@@ -37,7 +37,7 @@ describe('Fights - get logs', () => {
   });
 
   describe('Should pass', () => {
-    it(`Get logs`, () => {
+    it('Get logs', () => {
       const clone = structuredClone(data);
 
       try {

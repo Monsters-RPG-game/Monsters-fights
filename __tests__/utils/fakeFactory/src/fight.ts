@@ -1,8 +1,8 @@
 import TemplateFactory from './abstracts';
+import Fight from '../../../../src/modules/fights/model';
+import type { IFightEntity } from '../../../../src/modules/fights/entity';
 import type { EFakeData } from '../enums';
 import type { IAbstractBody } from '../types/data';
-import { IFightEntity } from '../../../../src/modules/fights/entity';
-import Fight from '../../../../src/modules/fights/model';
 
 export default class FakeFight
   extends TemplateFactory<EFakeData.Fights>

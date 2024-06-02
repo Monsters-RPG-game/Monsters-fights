@@ -1,9 +1,9 @@
 import TemplateFactory from './abstracts';
-import type { EFakeData } from '../enums';
-import type { IAbstractBody } from '../types/data';
 import { type EAction } from '../../../../src/enums';
 import Action from '../../../../src/modules/actions/model';
-import { IActionEntity } from '../../../../src/modules/actions/entity';
+import type { IActionEntity } from '../../../../src/modules/actions/entity';
+import type { EFakeData } from '../enums';
+import type { IAbstractBody } from '../types/data';
 
 export default class FakeAction
   extends TemplateFactory<EFakeData.Actions>

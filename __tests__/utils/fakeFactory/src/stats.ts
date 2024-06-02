@@ -1,9 +1,9 @@
 import TemplateFactory from './abstracts';
-import { EFakeData } from '../enums';
-import type { IAbstractBody } from '../types/data';
-import { IStatsEntity } from '../../../../src/modules/stats/entity';
 import Stats from '../../../../src/modules/stats/model';
-import { ICharacterStats } from '../../../../src/types/characters';
+import type { IStatsEntity } from '../../../../src/modules/stats/entity';
+import type { ICharacterStats } from '../../../../src/types/characters';
+import type { EFakeData } from '../enums';
+import type { IAbstractBody } from '../types/data';
 
 export default class FakeStats extends TemplateFactory<EFakeData.Stats> implements IAbstractBody<IStatsEntity> {
   constructor() {
@@ -35,6 +35,7 @@ export default class FakeStats extends TemplateFactory<EFakeData.Stats> implemen
       stats: {
         intelligence: 1,
         strength: 1,
+        hp: 1,
       },
       lvl: undefined,
       character: undefined,

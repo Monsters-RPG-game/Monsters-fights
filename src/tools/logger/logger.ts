@@ -14,7 +14,7 @@ const errLogger = winston.createLogger({
   transports: levels.map((l) => {
     return new DailyRotateFile({
       level: l,
-      filename: `${path!}logs/errors-%DATE%.log`,
+      filename: `${path}logs/errors-%DATE%.log`,
       json: true,
       format: winston.format.combine(
         winston.format.timestamp(),

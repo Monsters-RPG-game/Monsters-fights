@@ -1,17 +1,17 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from '@jest/globals';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import GetController from '../../../src/modules/fights/get';
-import CreateController from '../../../src/modules/fights/create';
-import LeaveController from '../../../src/modules/fights/leave';
 import * as errors from '../../../src/errors';
+import CreateController from '../../../src/modules/fights/create';
+import GetController from '../../../src/modules/fights/get';
+import LeaveController from '../../../src/modules/fights/leave';
 import fakeData from '../../utils/fakeData.json';
 import FakeFactory from '../../utils/fakeFactory/src';
-import { IFightEntity } from '../../../src/modules/fights/entity';
-import { ICreateFightDto } from '../../../src/modules/fights/create/types';
-import { IGetFightDto } from '../../../src/modules/fights/get/types';
+import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { IFightEntity } from '../../../src/modules/fights/entity';
+import type { IGetFightDto } from '../../../src/modules/fights/get/types';
+import type { IStatsEntity } from '../../../src/modules/stats/entity';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
-import { IStatsEntity } from '../../../src/modules/stats/entity';
 
 describe('Fights', () => {
   const db = new FakeFactory();
@@ -24,10 +24,15 @@ describe('Fights', () => {
   };
   const create: ICreateFightDto = {
     attacker: fightCharacter,
-    teams: [[], [{
-      character: fightCharacter,
-      stats: fakeStats._id,
-    }]],
+    teams: [
+      [],
+      [
+        {
+          character: fightCharacter,
+          stats: fakeStats._id,
+        },
+      ],
+    ],
   };
   const get: IGetFightDto = {
     owner: fakeFight.attacker,
@@ -61,7 +66,7 @@ describe('Fights', () => {
   });
 
   describe('Should pass', () => {
-    it(`Leave`, async () => {
+    it('Leave', async () => {
       await createController.createFight(create);
       await leaveController.leaveFight(leave.user);
 

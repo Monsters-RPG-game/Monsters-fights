@@ -1,12 +1,12 @@
 import { describe, expect, it } from '@jest/globals';
 import * as errors from '../../../src/errors';
-import { ICreateFightDto } from '../../../src/modules/fights/create/types';
 import CreateFightDto from '../../../src/modules/fights/create/dto';
-import { IStateTeam } from '../../../src/modules/state/types';
-import type { IFightCharacterEntity } from '../../../src/types/characters';
 import fakeData from '../../utils/fakeData.json';
-import { IFightEntity } from '../../../src/modules/fights/entity';
-import { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { IFightEntity } from '../../../src/modules/fights/entity';
+import type { IStateTeam } from '../../../src/modules/state/types';
+import type { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { IFightCharacterEntity } from '../../../src/types/characters';
 
 describe('Fights - create', () => {
   const fakeFight = fakeData.fights[0] as IFightEntity;
@@ -17,13 +17,13 @@ describe('Fights - create', () => {
     stats: fakeStats.stats,
   };
   const data: ICreateFightDto = {
-    teams: [[], [{ character: fightCharacter,  stats: fakeStats._id }]],
+    teams: [[], [{ character: fightCharacter, stats: fakeStats._id }]],
     attacker: fightCharacter,
   };
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Missing page`, () => {
+      it('Missing page', () => {
         const clone = structuredClone(data);
         clone.teams = undefined!;
 
@@ -34,7 +34,7 @@ describe('Fights - create', () => {
         }
       });
 
-      it(`Missing attacker`, () => {
+      it('Missing attacker', () => {
         const clone = structuredClone(data);
         clone.attacker = undefined!;
 
@@ -47,7 +47,7 @@ describe('Fights - create', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Teams incorrect type`, () => {
+      it('Teams incorrect type', () => {
         const clone = structuredClone(data);
         clone.teams = 'bc' as unknown as [IStateTeam[], IStateTeam[]];
 
@@ -58,7 +58,7 @@ describe('Fights - create', () => {
         }
       });
 
-      it(`Teams missing character in team`, () => {
+      it('Teams missing character in team', () => {
         const clone = structuredClone(data);
         clone.teams = [[], [{ hp: 10 }]] as unknown as [IStateTeam[], IStateTeam[]];
 
@@ -69,7 +69,7 @@ describe('Fights - create', () => {
         }
       });
 
-      it(`Attacker incorrect type`, () => {
+      it('Attacker incorrect type', () => {
         const clone = structuredClone(data);
         clone.attacker = 'asd' as unknown as IFightCharacterEntity;
 
@@ -83,7 +83,7 @@ describe('Fights - create', () => {
   });
 
   describe('Should pass', () => {
-    it(`Attack`, () => {
+    it('Attack', () => {
       const clone = structuredClone(data);
 
       try {

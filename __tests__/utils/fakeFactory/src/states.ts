@@ -1,8 +1,8 @@
 import TemplateFactory from './abstracts';
-import { EFakeData } from '../enums';
-import type { IAbstractBody } from '../types/data';
-import { IStateBodyTeamEntity, IStateEntity } from '../../../../src/modules/state/entity';
 import State from '../../../../src/modules/state/model';
+import type { IStateBodyTeamEntity, IStateEntity } from '../../../../src/modules/state/entity';
+import type { EFakeData } from '../enums';
+import type { IAbstractBody } from '../types/data';
 
 export default class FakeState extends TemplateFactory<EFakeData.States> implements IAbstractBody<IStateEntity> {
   constructor() {

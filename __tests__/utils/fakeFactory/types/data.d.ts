@@ -1,14 +1,14 @@
+import type { IActionEntity } from '../../../../src/modules/actions/entity';
+import type Action from '../../../../src/modules/actions/model';
+import type { IFightEntity } from '../../../../src/modules/fights/entity';
+import type Fight from '../../../../src/modules/fights/model';
+import type { ILogEntity } from '../../../../src/modules/log/entity';
+import type Log from '../../../../src/modules/log/model';
+import type { IStateEntity } from '../../../../src/modules/state/entity';
+import type State from '../../../../src/modules/state/model';
+import type { IStatsEntity } from '../../../../src/modules/stats/entity';
+import type Stats from '../../../../src/modules/stats/model';
 import type { EFakeData } from '../enums';
-import Action from '../../../../src/modules/actions/model';
-import Fight from '../../../../src/modules/fights/model';
-import Log from '../../../../src/modules/log/model';
-import State from '../../../../src/modules/state/model';
-import Stats from '../../../../src/modules/stats/model';
-import { IActionEntity } from '../../../../src/modules/actions/entity';
-import { IFightEntity } from '../../../../src/modules/fights/entity';
-import { ILogEntity } from '../../../../src/modules/log/entity';
-import { IStateEntity } from '../../../../src/modules/state/entity';
-import { IStatsEntity } from '../../../../src/modules/stats/entity';
 
 export type IFakeParam<T> = {
   [P in keyof T]?: T[P];

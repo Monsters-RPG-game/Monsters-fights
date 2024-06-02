@@ -8,7 +8,7 @@ describe('Fights - attack', () => {
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Missing target`, () => {
+      it('Missing target', () => {
         const clone = structuredClone(data);
         clone.target = undefined!;
 
@@ -21,7 +21,7 @@ describe('Fights - attack', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Target incorrect type`, () => {
+      it('Target incorrect type', () => {
         const clone = structuredClone(data);
         clone.target = 'bc';
 
@@ -35,7 +35,7 @@ describe('Fights - attack', () => {
   });
 
   describe('Should pass', () => {
-    it(`Attack`, () => {
+    it('Attack', () => {
       const clone = structuredClone(data);
 
       try {

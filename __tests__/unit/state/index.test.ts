@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it } from '@jest/globals';
 import State from '../../../src/modules/state';
-import { IFullFight } from '../../../src/modules/fights/types';
-import type { IFightCharacterEntity } from '../../../src/types/characters';
 import fakeData from '../../utils/fakeData.json';
-import { IFightEntity } from '../../../src/modules/fights/entity';
-import { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { IFightEntity } from '../../../src/modules/fights/entity';
+import type { IFullFight } from '../../../src/modules/fights/types';
+import type { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { IFightCharacterEntity } from '../../../src/types/characters';
 
 describe('State', () => {
   const fakeFight = fakeData.fights[0] as IFightEntity;
@@ -42,12 +42,12 @@ describe('State', () => {
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Get fight - no id`, () => {
+      it('Get fight - no id', () => {
         const data = state.get(undefined as unknown as string);
         expect(data).toBeUndefined();
       });
 
-      it(`Leave fight - no id`, () => {
+      it('Leave fight - no id', () => {
         try {
           state.leave(undefined as unknown as string);
         } catch (err) {
@@ -57,7 +57,7 @@ describe('State', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Leave fight - no fight`, () => {
+      it('Leave fight - no fight', () => {
         try {
           state.leave(leaveFightReq.user);
         } catch (err) {
@@ -65,7 +65,7 @@ describe('State', () => {
         }
       });
 
-      it(`Get fight - no fight`, () => {
+      it('Get fight - no fight', () => {
         const data = state.get(fightId);
         expect(data).toBeUndefined();
       });
@@ -73,7 +73,7 @@ describe('State', () => {
   });
 
   describe('Should pass', () => {
-    it(`Create fight`, () => {
+    it('Create fight', () => {
       try {
         state.create(createFightReq);
         const fight = state.get(fightId);
@@ -84,7 +84,7 @@ describe('State', () => {
       }
     });
 
-    it(`Leave fight`, () => {
+    it('Leave fight', () => {
       try {
         state.create(createFightReq);
         state.leave(leaveFightReq.user);
@@ -95,7 +95,7 @@ describe('State', () => {
       }
     });
 
-    it(`Get fight`, () => {
+    it('Get fight', () => {
       try {
         state.create(createFightReq);
         const fight = state.get(fightId);

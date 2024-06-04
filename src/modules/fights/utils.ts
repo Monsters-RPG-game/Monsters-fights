@@ -22,21 +22,22 @@ export const prepareFight = (dbFight: IFightEntity, dbState: IStateEntity, dbSta
   const fight: IFullFight = { ...dbFight, states };
 
   states.current.enemy = dbState.current.enemy.map((e) => {
-    const stats = dbStats.find((s) => s.character === e.character)!;
+    const stats = dbStats.find((s) => s.character.toString() === e.character.toString())!;
     return { ...e, character: { lvl: stats.lvl, stats: stats.stats, _id: e.character } };
   });
   states.current.attacker = dbState.current.attacker.map((e) => {
-    const stats = dbStats.find((s) => s.character === e.character)!;
+    const stats = dbStats.find((s) => s.character.toString() === e.character.toString())!;
     return { ...e, character: { lvl: stats.lvl, stats: stats.stats, _id: e.character } };
   });
   states.initialized.enemy = dbState.initialized.enemy.map((e) => {
-    const stats = dbStats.find((s) => s.character === e.character)!;
+    const stats = dbStats.find((s) => s.character.toString() === e.character.toString())!;
     return { ...e, character: { lvl: stats.lvl, stats: stats.stats, _id: e.character } };
   });
   states.initialized.attacker = dbState.initialized.attacker.map((e) => {
-    const stats = dbStats.find((s) => s.character === e.character)!;
+    const stats = dbStats.find((s) => s.character.toString() === e.character.toString())!;
     return { ...e, character: { lvl: stats.lvl, stats: stats.stats, _id: e.character } };
   });
+
   return fight;
 };
 
@@ -49,19 +50,19 @@ export const prepareStatsToSave = (states: IFightState): IStateEntity => {
     current: {
       ...states.current,
       attacker: states.current.attacker.map((a) => {
-        return { ...a, character: a.stats } as IStateTeamEntity;
+        return { ...a, character: a.character._id } as IStateTeamEntity;
       }),
       enemy: states.current.enemy.map((a) => {
-        return { ...a, character: a.stats } as IStateTeamEntity;
+        return { ...a, character: a.character._id } as IStateTeamEntity;
       }),
     },
     initialized: {
       ...states.initialized,
       attacker: states.initialized.attacker.map((a) => {
-        return { ...a, character: a.stats } as IStateTeamEntity;
+        return { ...a, character: a.character._id } as IStateTeamEntity;
       }),
       enemy: states.initialized.enemy.map((a) => {
-        return { ...a, character: a.stats } as IStateTeamEntity;
+        return { ...a, character: a.character._id } as IStateTeamEntity;
       }),
     },
   };

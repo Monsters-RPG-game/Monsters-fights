@@ -68,7 +68,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const playerTeam = fight.states.current.attacker;
 
     const player = playerTeam[0]!;
-    const target = enemyTeam.find((e) => e.character._id === payload.target);
+    const target = enemyTeam.find((e) => e.character._id.toString() === payload.target);
     if (!target) throw new IncorrectAttackTarget();
 
     const playermodifier = this.calculateModifiers(1, player.character.stats.strength, target.character.stats.strength);

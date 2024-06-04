@@ -5,7 +5,6 @@ import type mongoose from 'mongoose';
 export interface IStateTeam {
   character: IFightCharacterEntity;
   stats: string;
-  hp: number;
 }
 
 export interface IStateBodyTeam {

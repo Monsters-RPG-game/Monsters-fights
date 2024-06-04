@@ -25,6 +25,16 @@
       "phase": 2,
       "start": "2024-03-10T14:46:20.986Z",
       "finish": "2024-03-10T14:53:25.923Z"
+    },
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d692",
+      "log": "65edc7bcefd4ecbb6ca8d696",
+      "states": "65edc7bcefd4ecbb6ca8d693",
+      "attacker": "65edaf46f08f4b4b8030ff38",
+      "active": true,
+      "phase": 2,
+      "start": "2024-03-10T14:46:20.986Z",
+      "finish": "2024-03-10T14:53:25.923Z"
     }
   ],
   "logs": [
@@ -33,10 +43,7 @@
       "logs": [
         {
           "phase": 1,
-          "actions": [
-            "65edc7d4efd4ecbb6ca8d69d",
-            "65edc7d4efd4ecbb6ca8d69e"
-          ]
+          "actions": ["65edc7d4efd4ecbb6ca8d69d", "65edc7d4efd4ecbb6ca8d69e"]
         }
       ]
     }
@@ -48,15 +55,13 @@
         "attacker": [
           {
             "character": "65ed8d7746df2cc0f50926ab",
-            "stats": "65edc7bcefd4ecbb6ca8d671",
-            "hp": 10
+            "stats": "65edc7bcefd4ecbb6ca8d671"
           }
         ],
         "enemy": [
           {
             "character": "65edaf46f08f4b4b8030ff38",
-            "stats": "65edc7bcefd4ecbb6ca8d672",
-            "hp": 10
+            "stats": "65edc7bcefd4ecbb6ca8d672"
           }
         ]
       },
@@ -64,15 +69,44 @@
         "attacker": [
           {
             "character": "65ed8d7746df2cc0f50926ab",
-            "stats": "65edc7bcefd4ecbb6ca8d671",
-            "hp": 8
+            "stats": "65edc7bcefd4ecbb6ca8d671"
           }
         ],
         "enemy": [
           {
             "character": "65edaf46f08f4b4b8030ff38",
-            "stats": "65edc7bcefd4ecbb6ca8d672",
-            "hp": 5
+            "stats": "65edc7bcefd4ecbb6ca8d672"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d693",
+      "initialized": {
+        "attacker": [
+          {
+            "character": "65ed8d7746df2cc0f50926ab",
+            "stats": "65edc7bcefd4ecbb6ca8d672"
+          }
+        ],
+        "enemy": [
+          {
+            "character": "65edaf46f08f4b4b8030ff38",
+            "stats": "65edc7bcefd4ecbb6ca8d671"
+          }
+        ]
+      },
+      "current": {
+        "attacker": [
+          {
+            "character": "65ed8d7746df2cc0f50926ab",
+            "stats": "65edc7bcefd4ecbb6ca8d671"
+          }
+        ],
+        "enemy": [
+          {
+            "character": "65edaf46f08f4b4b8030ff38",
+            "stats": "65edc7bcefd4ecbb6ca8d672"
           }
         ]
       }
@@ -85,7 +119,8 @@
       "lvl": 1,
       "stats": {
         "intelligence": 1,
-        "strength": 1
+        "strength": 1,
+        "hp": 10
       }
     },
     {
@@ -93,8 +128,20 @@
       "character": "65edaf46f08f4b4b8030ff38",
       "lvl": 1,
       "stats": {
-        "intelligence": 1,
-        "strength": 1
+        "intelligence": 2,
+        "strength": 2,
+        "hp": 10
+      }
+    },
+
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d673",
+      "character": "65edaf46f08f4b4b8030ff39",
+      "lvl": 3,
+      "stats": {
+        "intelligence": 2,
+        "strength": 3,
+        "hp": 10
       }
     }
   ]

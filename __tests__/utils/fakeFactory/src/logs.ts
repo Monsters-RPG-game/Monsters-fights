@@ -1,8 +1,8 @@
 import TemplateFactory from './abstracts';
-import { EFakeData } from '../enums';
-import type { IAbstractBody } from '../types/data';
-import { ILogBody, ILogEntity } from '../../../../src/modules/log/entity';
 import Log from '../../../../src/modules/log/model';
+import type { ILogBody, ILogEntity } from '../../../../src/modules/log/entity';
+import type { EFakeData } from '../enums';
+import type { IAbstractBody } from '../types/data';
 
 export default class FakeLog extends TemplateFactory<EFakeData.Logs> implements IAbstractBody<ILogEntity> {
   constructor() {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import * as errors from '../../../src/errors';
-import { IGetFightDto } from '../../../src/modules/fights/get/types';
 import GetFightDto from '../../../src/modules/fights/get/dto';
+import type { IGetFightDto } from '../../../src/modules/fights/get/types';
 
 describe('Fights - get', () => {
   const data: IGetFightDto = {
@@ -12,7 +12,7 @@ describe('Fights - get', () => {
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Missing owner`, () => {
+      it('Missing owner', () => {
         const clone = structuredClone(data);
         clone.owner = undefined!;
 
@@ -23,7 +23,7 @@ describe('Fights - get', () => {
         }
       });
 
-      it(`Missing active`, () => {
+      it('Missing active', () => {
         const clone = structuredClone(data);
         clone.active = undefined!;
 
@@ -36,7 +36,7 @@ describe('Fights - get', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Owner incorrect type`, () => {
+      it('Owner incorrect type', () => {
         const clone = structuredClone(data);
         clone.owner = 'bc';
 
@@ -47,7 +47,7 @@ describe('Fights - get', () => {
         }
       });
 
-      it(`Active incorrect type`, () => {
+      it('Active incorrect type', () => {
         const clone = structuredClone(data);
         clone.active = 'bc' as unknown as boolean;
 
@@ -61,7 +61,7 @@ describe('Fights - get', () => {
   });
 
   describe('Should pass', () => {
-    it(`Get active`, () => {
+    it('Get active', () => {
       const clone = structuredClone(data);
 
       try {
@@ -71,7 +71,7 @@ describe('Fights - get', () => {
       }
     });
 
-    it(`Get inactive`, () => {
+    it('Get inactive', () => {
       const clone = structuredClone(data);
       clone.active = false;
 

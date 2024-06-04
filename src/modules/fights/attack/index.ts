@@ -11,7 +11,7 @@ import StatsController from '../../stats/controller';
 import Fight from '../model';
 import Rooster from '../rooster';
 import { prepareFight, prepareStatsToSave } from '../utils';
-import type { IAttackDto } from './types';
+import type { IAttackDto, IBaseDamage } from './types';
 import type { EModules } from '../../../enums';
 import type { IActionEntity } from '../../actions/entity';
 import type { ILogEntity } from '../../log/entity';
@@ -58,46 +58,33 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   ): Promise<{ logs: Omit<IActionEntity, '_id'>[]; status: EFightStatus }> {
     const payload = new AttackDto(data);
     Log.log('Attack', 'Got new attack:', payload);
-
     let fight = await State.redis.getFight(userId);
-
     if (!fight) {
-      const dbFight = await this.rooster.getActiveByUser(userId);
-      if (!dbFight) throw new UserNotInFight();
-      const dbState = await this.states.get(dbFight?.states);
-      const characters: string[] = [];
-      dbState?.current.attacker.forEach((a) => {
-        characters.push(a.character);
-      });
-      dbState?.current.enemy.forEach((a) => {
-        characters.push(a.character);
-      });
-      const dbStats = await this.stats.getMany({ characters });
-
-      const prepared = prepareFight(dbFight, dbState as IStateEntity, dbStats);
-
-      await State.redis.addFight(userId, prepared);
-      fight = prepared;
+      fight = await this.initializeFight(userId);
     }
 
     const actions: Omit<IActionEntity, '_id'>[] = [];
     const enemyTeam = fight.states.current.enemy;
     const playerTeam = fight.states.current.attacker;
 
-    const target = enemyTeam.find((e) => e.character._id === payload.target);
-    const player = playerTeam.find((e) => e.character._id === userId) as IStateTeam;
+    const player = playerTeam[0]!;
+    const target = enemyTeam.find((e) => e.character._id.toString() === payload.target);
     if (!target) throw new IncorrectAttackTarget();
 
-    // Hardcoded attack value
-    target.hp = target.hp - 5;
+    const playermodifier = this.calculateModifiers(1, player.character.stats.strength, target.character.stats.strength);
+    const playerdamage = this.calculateBaseMeleeDamage(player.character.stats.strength, playermodifier);
+
+    // player attack
+    await this.applyDamage(target, playerdamage!);
+
     actions.push({
       character: userId,
       action: EAction.Attack,
       target: target.character._id,
-      value: -5,
+      value: -playerdamage!.dmg,
     });
 
-    const aliveEnemies = enemyTeam.filter((ch) => ch.hp > 0);
+    const aliveEnemies = this.checkAliveEnemies(enemyTeam);
     if (aliveEnemies.length === 0) {
       Log.debug('Fight', 'All enemies dead');
       await this.finishFight(fight, actions, userId);
@@ -105,18 +92,13 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       return { logs: actions, status: EFightStatus.Win };
     }
 
-    aliveEnemies.forEach((e) => {
-      // Attack player
-      player.hp = player.hp - 2;
-      actions.push({
-        character: e.character._id,
-        action: EAction.Attack,
-        target: userId,
-        value: -2,
-      });
+    await this.enemyLoop({
+      targetCharacter: playerTeam[0]!,
+      actions,
+      attackerTeam: enemyTeam,
     });
 
-    if (player.hp <= 0) {
+    if (player.character.stats.hp <= 0) {
       Log.debug('Fight', 'Player dead');
       await this.finishFight(fight, actions, userId);
 
@@ -126,6 +108,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const phase = await this.updateDependencies(fight, actions);
     await this.startNextPhase(fight._id.toString(), phase);
     await State.redis.updateFight(fight.attacker, fight);
+
     return { logs: actions, status: EFightStatus.Ongoing };
   }
 
@@ -155,5 +138,90 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
   private async startNextPhase(fight: string, nextPhase: number): Promise<void> {
     await this.rooster.update(fight, { phase: nextPhase });
+  }
+
+  /** for now we base our calculation on strength difference, later we will change this to some
+   * stat like str to defence/endurance etc
+   * itemPower for now is 1, later we can add equipment with some stats that will increase modifier to damage
+   */
+  private calculateModifiers(itemPower: number, attackerStr: number, targetStr: number): number {
+    let mod = 0;
+    if (attackerStr > targetStr) {
+      mod += attackerStr - targetStr;
+    }
+    if (mod > 0) {
+      mod *= itemPower;
+    }
+    return mod;
+  }
+  private checkAliveEnemies(enemy: IStateTeam[]): IStateTeam[] {
+    return enemy.filter((e) => {
+      return e.character.stats.hp > 0;
+    });
+  }
+
+  /** base damage is sum of strength and modifier (which is difference between attacker and target strength)
+   * later we can another type of damage like ranged,magic etc
+   */
+  private calculateBaseMeleeDamage(str: number, modifier: number): IBaseDamage | undefined {
+    const dmg: IBaseDamage = {
+      dmg: str + modifier,
+    };
+    return dmg;
+  }
+
+  private async applyDamage(char: IStateTeam, base: IBaseDamage): Promise<void> {
+    const newHp = char.character.stats.hp - base.dmg;
+    await this.stats.rooster.update(char.stats, {
+      stats: { ...char.character.stats, hp: newHp },
+    });
+    const testmsg = `applied: [${base.dmg}] dmg to character: [${char.character._id}]`;
+    Log.log('Attack', testmsg);
+  }
+
+  private async enemyLoop({
+    attackerTeam,
+    targetCharacter,
+    actions,
+  }: {
+    attackerTeam: IStateTeam[];
+    actions: Omit<IActionEntity, '_id'>[];
+    targetCharacter: IStateTeam;
+  }): Promise<void> {
+    const targetCharacterId = targetCharacter.character._id;
+
+    const promises = attackerTeam.map(async (e) => {
+      const mod = this.calculateModifiers(1, e.character.stats.strength, targetCharacter.character.stats.strength);
+      const enemyDamage = this.calculateBaseMeleeDamage(targetCharacter.character.stats.strength, mod);
+      await this.applyDamage(targetCharacter, enemyDamage!);
+      actions.push({
+        character: e.character._id,
+        action: EAction.Attack,
+        target: targetCharacterId,
+        value: -enemyDamage!.dmg,
+      });
+    });
+
+    await Promise.all(promises);
+  }
+
+  private async initializeFight(userId: string): Promise<IFullFight> {
+    const dbFight = await this.rooster.getActiveByUser(userId);
+    if (!dbFight) throw new UserNotInFight();
+    const dbState = await this.states.get(dbFight?.states);
+    const characters: string[] = [];
+
+    dbState?.current.attacker.forEach((a) => {
+      characters.push(a.character);
+    });
+
+    dbState?.current.enemy.forEach((a) => {
+      characters.push(a.character);
+    });
+
+    const dbStats = await this.stats.getMany({ characters });
+    const prepared = prepareFight(dbFight, dbState as IStateEntity, dbStats);
+    await State.redis.addFight(userId, prepared);
+    return prepared;
   }
 }

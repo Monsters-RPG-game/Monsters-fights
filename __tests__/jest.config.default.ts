@@ -1,5 +1,5 @@
-import type { Config } from 'jest';
 import { defaults } from 'jest-config';
+import type { Config } from 'jest';
 
 const config: Config = {
   verbose: true,

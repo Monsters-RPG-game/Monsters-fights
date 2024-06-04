@@ -67,7 +67,6 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
     if (!fight) {
       const dbFight = await this.rooster.getActiveByUser(payload.owner);
-
       if (!dbFight) throw new UserNotInFight();
       const dbState = await this.state.get(dbFight?.states.toString());
       const logs = await this.prepareLogs(dbFight.log);

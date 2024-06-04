@@ -12,10 +12,6 @@ export const stateBody = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: [false, 'Stats not provided'],
     },
-    hp: {
-      type: Number,
-      required: [true, 'Hp not provided'],
-    },
   },
   { timestamps: false, _id: false },
 );

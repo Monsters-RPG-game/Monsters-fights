@@ -2,4 +2,3 @@
 node_modules
 build
 .eslintrc.json
-__tests__

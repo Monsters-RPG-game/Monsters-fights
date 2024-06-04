@@ -1,6 +1,7 @@
 export interface ICharacterStats {
   intelligence: number;
   strength: number;
+  hp: number;
 }
 
 export interface IFightCharacterEntity {

@@ -1,20 +1,20 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from '@jest/globals';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import GetController from '../../../src/modules/fights/get';
-import GetLogsController from '../../../src/modules/fights/getLogs';
+import * as errors from '../../../src/errors';
 import AttackController from '../../../src/modules/fights/attack';
 import CreateController from '../../../src/modules/fights/create';
-import * as errors from '../../../src/errors';
+import GetController from '../../../src/modules/fights/get';
+import GetLogsController from '../../../src/modules/fights/getLogs';
 import fakeData from '../../utils/fakeData.json';
 import FakeFactory from '../../utils/fakeFactory/src';
-import { IStateEntity } from '../../../src/modules/state/entity';
-import { IFightEntity } from '../../../src/modules/fights/entity';
-import { IAttackDto } from '../../../src/modules/fights/attack/types';
-import { ICreateFightDto } from '../../../src/modules/fights/create/types';
-import { IGetFightDto } from '../../../src/modules/fights/get/types';
-import { IGetLogsDto } from '../../../src/modules/fights/getLogs/types';
-import { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { IAttackDto } from '../../../src/modules/fights/attack/types';
+import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { IFightEntity } from '../../../src/modules/fights/entity';
+import type { IGetFightDto } from '../../../src/modules/fights/get/types';
+import type { IGetLogsDto } from '../../../src/modules/fights/getLogs/types';
+import type { IStateEntity } from '../../../src/modules/state/entity';
+import type { IStatsEntity } from '../../../src/modules/stats/entity';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
 
 describe('Fights', () => {
@@ -30,7 +30,7 @@ describe('Fights', () => {
   };
   const create: ICreateFightDto = {
     attacker: fightCharacter,
-    teams: [[], [{ character: fightCharacter, hp: 10, stats: fakeStats._id }]],
+    teams: [[], [{ character: fightCharacter, stats: fakeStats._id }]],
   };
   const get: IGetFightDto = {
     owner: fakeFight.attacker,
@@ -67,7 +67,7 @@ describe('Fights', () => {
 
   describe('Should throw', () => {
     describe('No data passed', () => {
-      it(`Get fight logs - missing id`, () => {
+      it('Get fight logs - missing id', () => {
         const clone = structuredClone(getLogs);
         clone.id = undefined!;
 
@@ -78,7 +78,7 @@ describe('Fights', () => {
     });
 
     describe('Incorrect data', () => {
-      it(`Get fight logs - id incorrect type`, async () => {
+      it('Get fight logs - id incorrect type', async () => {
         const clone = structuredClone(getLogs);
         clone.id = 'asd';
 
@@ -92,7 +92,7 @@ describe('Fights', () => {
   });
 
   describe('Should pass', () => {
-    it(`Get logs`, async () => {
+    it('Get logs', async () => {
       await createController.createFight(create);
       await attackController.attack(attack, fakeFight.attacker);
       const fight = await getController.get(get);

@@ -68,6 +68,6 @@ export default class Log {
   }
 
   private static toString(message: unknown): string {
-    return typeof message !== 'string' ? JSON.stringify(message, null, 2) : message;
+    return typeof message !== 'string' ? JSON.stringify(message) : message;
   }
 }

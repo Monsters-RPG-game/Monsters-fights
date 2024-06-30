@@ -144,5 +144,20 @@
         "hp": 10
       }
     }
+  ],
+  "skills": [
+    {
+      "_id": "65edc7bcefd4ecbb6ca8d673",
+      "owner": "65ed8d7746df2cc0f50926ab",
+      "singleSkills": [
+        {
+          "_id": "65edc7bcefd4ecbb6ca8d673",
+          "name": "65edc7bcefd4ecbb6ca8d673",
+          "power": 3,
+          "type": "attack",
+          "target": "enemy"
+        }
+      ]
+    }
   ]
 }

@@ -10,6 +10,7 @@ import fakeData from '../../utils/fakeData.json';
 import FakeFactory from '../../utils/fakeFactory/src';
 import type { IAttackDto } from '../../../src/modules/fights/attack/types';
 import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
+import type { ISkillsEntity } from '../../../src/modules/skills/entity';
 import type { IStatsEntity } from '../../../src/modules/stats/entity';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
 
@@ -18,6 +19,7 @@ describe('Fights', () => {
   const fakeStats = fakeData.stats[0] as IStatsEntity;
   const fakeStats2 = fakeData.stats[1] as IStatsEntity;
   const fakeStats3 = fakeData.stats[2] as IStatsEntity;
+  const fakeSkills = fakeData.skills[0] as ISkillsEntity;
   const testEnemy: IFightCharacterEntity = {
     _id: '65ed8d7746df2cc0f50926ab',
     lvl: 1,
@@ -33,7 +35,6 @@ describe('Fights', () => {
     lvl: 2,
     stats: fakeStats2.stats,
   };
-
   const testAttack: IAttackDto = { target: testEnemy._id };
 
   const testCreate: ICreateFightDto = {
@@ -51,6 +52,7 @@ describe('Fights', () => {
         },
       ],
     ],
+    skills: fakeSkills,
   };
 
   let attackController = new AttackController();

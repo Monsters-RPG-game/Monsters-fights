@@ -3,6 +3,7 @@ import CreateController from './create';
 import GetController from './get';
 import GetLogsController from './getLogs';
 import LeaveController from './leave';
+import UseSkillController from './useSkill';
 import * as enums from '../../enums';
 import HandlerFactory from '../../tools/abstract/handler';
 import State from '../../tools/state';
@@ -10,6 +11,7 @@ import type { IAttackDto } from './attack/types';
 import type { ICreateFightDto } from './create/types';
 import type { IGetFightDto } from './get/types';
 import type { IGetLogsDto } from './getLogs/types';
+import type { IUseSkillDto } from './useSkill/types';
 import type { EModules } from '../../enums';
 import type { ILocalUser } from '../../types';
 
@@ -18,6 +20,7 @@ export default class UserHandler extends HandlerFactory<EModules.Fights> {
   private readonly _attackController: AttackController;
   private readonly _createController: CreateController;
   private readonly _leaveController: LeaveController;
+  private readonly _useSkillController: UseSkillController;
 
   constructor() {
     super(new GetController());
@@ -25,6 +28,7 @@ export default class UserHandler extends HandlerFactory<EModules.Fights> {
     this._attackController = new AttackController();
     this._createController = new CreateController();
     this._leaveController = new LeaveController();
+    this._useSkillController = new UseSkillController();
   }
 
   private get attackController(): AttackController {
@@ -39,12 +43,21 @@ export default class UserHandler extends HandlerFactory<EModules.Fights> {
     return this._createController;
   }
 
+  private get useSkillConstroller(): UseSkillController {
+    return this._useSkillController;
+  }
+
   private get leaveController(): LeaveController {
     return this._leaveController;
   }
 
   async attack(payload: unknown, user: ILocalUser): Promise<void> {
     const data = await this.attackController.attack(payload as IAttackDto, user.userId);
+    return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
+  }
+
+  async useSkill(payload: unknown, user: ILocalUser): Promise<void> {
+    const data = await this.useSkillConstroller.execute(payload as IUseSkillDto, user.userId);
     return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
   }
 

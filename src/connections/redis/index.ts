@@ -4,6 +4,7 @@ import * as enums from '../../enums';
 import { type IFullFight } from '../../modules/fights/types';
 import getConfig from '../../tools/configLoader';
 import Log from '../../tools/logger';
+import type { ISkillsEntity } from '../../modules/skills/entity';
 import type { IFullError } from '../../types';
 import type { RedisClientType } from 'redis';
 
@@ -49,6 +50,14 @@ export default class Redis {
   async getFight(target: string): Promise<IFullFight | undefined> {
     const data = await this.rooster.getFromHash({ target: `${enums.ERedisTargets.Fights}:${target}`, value: target });
     return data ? (JSON.parse(data) as IFullFight) : undefined;
+  }
+
+  async getSkills(target: string): Promise<ISkillsEntity | undefined> {
+    const data = await this.rooster.getFromHash({
+      target: `${enums.ERedisTargets.CachedSkills}:${target}`,
+      value: target,
+    });
+    return data ? (JSON.parse(data) as ISkillsEntity) : undefined;
   }
 
   async removeFight(target: string): Promise<void> {

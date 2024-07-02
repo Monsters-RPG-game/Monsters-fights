@@ -42,6 +42,11 @@ export default class Redis {
     return this.setExpirationDate(`${enums.ERedisTargets.Fights}:${target}`, 60 * 30);
   }
 
+  async addCachedSkills(skills: ISkillsEntity, userId: string): Promise<void> {
+    await this.rooster.addToHash(`${enums.ERedisTargets.CachedSkills}:${userId}`, userId, JSON.stringify(skills));
+    await this.rooster.setExpirationDate(`${enums.ERedisTargets.CachedSkills}:${userId}`, 60000);
+  }
+
   async updateFight(target: string, fight: IFullFight): Promise<void> {
     await this.rooster.addToHash(`${enums.ERedisTargets.Fights}:${target}`, target, JSON.stringify(fight));
     return this.setExpirationDate(`${enums.ERedisTargets.Fights}:${target}`, 60 * 30);

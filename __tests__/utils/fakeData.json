@@ -148,7 +148,7 @@
   "skills": [
     {
       "_id": "65edc7bcefd4ecbb6ca8d673",
-      "owner": "65ed8d7746df2cc0f50926ab",
+      "owner": "65edaf46f08f4b4b8030ff38",
       "singleSkills": [
         {
           "_id": "65edc7bcefd4ecbb6ca8d673",
@@ -156,6 +156,13 @@
           "power": 3,
           "type": "attack",
           "target": "enemy"
+        },
+        {
+          "_id": "6672c3bde7d0917cf910fd5d",
+          "name": "65edc7bcefd4ecbb6ca8d670",
+          "power": 1,
+          "type": "support",
+          "target": "teammate"
         }
       ]
     }

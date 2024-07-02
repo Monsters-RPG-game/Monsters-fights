@@ -57,7 +57,7 @@ export default class UserHandler extends HandlerFactory<EModules.Fights> {
   }
 
   async useSkill(payload: unknown, user: ILocalUser): Promise<void> {
-    const data = await this.useSkillConstroller.execute(payload as IUseSkillDto, user.userId);
+    const data = await this.useSkillConstroller.useSkill(payload as IUseSkillDto, user.userId);
     return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
   }
 

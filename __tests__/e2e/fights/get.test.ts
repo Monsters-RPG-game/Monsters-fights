@@ -11,6 +11,7 @@ import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
 import type { IFightEntity } from '../../../src/modules/fights/entity';
 import type { IGetFightDto } from '../../../src/modules/fights/get/types';
 import type { IGetLogsDto } from '../../../src/modules/fights/getLogs/types';
+import type { ISkillsEntity } from '../../../src/modules/skills/entity';
 import type { IStatsEntity } from '../../../src/modules/stats/entity';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
 
@@ -18,6 +19,7 @@ describe('Fights', () => {
   const db = new FakeFactory();
   const fakeFight = fakeData.fights[0] as IFightEntity;
   const fakeStats = fakeData.stats[0] as IStatsEntity;
+  const fakeSkills = fakeData.skills[0] as ISkillsEntity;
   const fightCharacter: IFightCharacterEntity = {
     _id: fakeFight.attacker,
     lvl: fakeStats.lvl,
@@ -26,6 +28,7 @@ describe('Fights', () => {
   const create: ICreateFightDto = {
     attacker: fightCharacter,
     teams: [[], [{ character: fightCharacter, stats: fakeStats._id }]],
+    skills: fakeSkills,
   };
   const get: IGetFightDto = {
     owner: fakeFight.attacker,

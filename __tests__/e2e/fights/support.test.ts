@@ -14,6 +14,7 @@ import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
 import type { IUseSkillDto } from '../../../src/modules/fights/useSkill/types';
 import type { ISkillsEntity } from '../../../src/modules/skills/entity';
 import type { IStatsEntity } from '../../../src/modules/stats/entity';
+import type { IFullError } from '../../../src/types';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
 
 describe('Fights', () => {
@@ -86,18 +87,18 @@ describe('Fights', () => {
   describe('Should pass', () => {
     it('Attack - hp of attacker is 32', async () => {
       await createController.createFight(testCreate);
-      console.log('userId',testPlayer._id)
-      const aaa=await State.redis.getSkills(testPlayer._id)
-    console.log('coisk',aaa)
+      let error: IFullError | undefined = undefined;
       try {
         await attackController.attack(testAttack, testPlayer._id);
-        await useSkillController.useSkill(testSuport, fakeSkills._id);
+        await useSkillController.useSkill(testSuport, testPlayer._id);
         const state = await stateController.rooster.getAll(1);
-        const stats = await statsController.rooster.get(state[0]?.current.enemy[0]?.stats);
+        const stats = await statsController.rooster.get(state[0]?.current.attacker[0]?.stats);
+
         expect(stats?.stats.hp).toBe(7);
       } catch (err) {
-        expect(err).toBeUndefined();
+        error = err as IFullError;
       }
+      expect(error).toBeUndefined();
     });
   });
 });

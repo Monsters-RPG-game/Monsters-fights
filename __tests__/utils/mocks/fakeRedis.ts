@@ -28,8 +28,7 @@ export default class FakeRedis extends Redis {
     });
   }
 
-  override async addCachedSkills(skills: ISkillsEntity, userId: string): Promise<void> {
-    console.log('FAKE ADD', skills, userId);
+  override async addCachedSkills(skills: ISkillsEntity, _userId: string): Promise<void> {
     return new Promise((resolve) => {
       this.skills.push(skills);
       resolve();
@@ -37,9 +36,8 @@ export default class FakeRedis extends Redis {
   }
 
   override async getSkills(target: string): Promise<ISkillsEntity | undefined> {
-    console.log('FAKE GET', target);
     return new Promise((resolve) => {
-      const data = this.skills.find((f) => f._id === target);
+      const data = this.skills.find((f) => f.owner === target);
       resolve(data);
     });
   }

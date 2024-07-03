@@ -8,7 +8,7 @@ import BaseAttackDto from '../baseAttack/dto';
 import Fight from '../model';
 import Rooster from '../rooster';
 import type { IUseSkillDto } from './types';
-import type { EFightStatus, EModules, ESkillsType } from '../../../enums';
+import type { EFightStatus, EModules } from '../../../enums';
 import type { IActionEntity } from '../../actions/entity';
 
 export default class Controller extends ControllerFactory<EModules.Fights> {
@@ -38,7 +38,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const dto = new BaseAttackDto({
       target: payload.target,
       externalPower: skill.power,
-      type: skill.type as ESkillsType,
+      type: skill.type,
       skill,
     });
     // check type of skills

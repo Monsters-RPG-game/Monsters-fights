@@ -61,7 +61,7 @@ export default class Broker {
   private initCommunication(): void {
     if (this._connectionTries++ > Number(enums.ERabbit.RetryLimit)) {
       Log.error('Rabbit', 'Gave up connecting to rabbit. Is rabbit dead?');
-      return;
+      throw new Error('Gave up connecting to rabbit. Is rabbit dead?');
     }
 
     amqplib

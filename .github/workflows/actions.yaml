@@ -87,7 +87,7 @@ jobs:
           path: config/
 
       - name: Run tests
-        run: apt-get update && apt-get install gdebi-core -y && wget http://ftp.us.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb && gdebi --non-interactive libssl1.1_1.1.1w-0+deb11u1_amd64.deb && yarn test:e2e && yarn test:unit && yarn test:db
+        run: apt-get update && apt-get install gdebi-core -y && wget http://ftp.us.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb && gdebi --non-interactive libssl1.1_1.1.1w-0+deb11u1_amd64.deb && MONGOMS_DISTRO=ubuntu-22.04 yarn test:e2e && MONGOMS_DISTRO=ubuntu-22.04 yarn test:unit && MONGOMS_DISTRO=ubuntu-22.04 yarn test:db
 
   lint:
     needs: [ setup-config ]

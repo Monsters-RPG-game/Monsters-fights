@@ -81,7 +81,8 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       case ESkillsType.Attack:
         target = fight.states.current.enemy.find((e) => e.character._id.toString() === payload.target);
         if (!target) throw new IncorrectAttackTarget();
-        actionValue = await this.attackAction(payload, target, player);
+        const { dmg } = this.attackAction(payload, target, player);
+        actionValue = dmg
         actions.push({
           character: userId,
           action: EAction.Attack,
@@ -114,7 +115,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       return { logs: actions, status: EFightStatus.Win, currentHp: 2 };
     }
 
-    await this.enemyLoop({
+    this.enemyLoop({
       playerTeam,
       enemyTeam,
       actions,
@@ -150,7 +151,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   //   return playerdamage!.dmg;
   // }
 
-  private async attackAction(data: IBaseAttackDto, enemy: IStateTeam, player: IStateTeam): Promise<number> {
+  private attackAction(data: IBaseAttackDto, enemy: IStateTeam, player: IStateTeam): { dmg: number, char: IStateTeam } {
     const playermodifier = this.calculateModifiers(
       data.externalPower,
       player.character.stats.strength,
@@ -159,8 +160,10 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const playerdamage = this.calculateBaseMeleeDamage(player.character.stats.strength, playermodifier);
     console.log('----------', { mod: playermodifier, dmg: playerdamage, char: player.character._id, enemy });
 
-    await this.applyDamage(enemy, playerdamage!);
-    return playerdamage!.dmg;
+    const char = this.applyDamage(enemy, playerdamage!);
+    console.log("@**@*#*@#*@#", char)
+    // return playerdamage!.dmg;
+    return { dmg: playerdamage!.dmg, char }
   }
   private async supportAction(data: IBaseAttackDto, target: IStateTeam): Promise<number> {
     // const player = playerTeam.find((e) => e.character._id === data.target);
@@ -234,18 +237,19 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return dmg;
   }
 
-  private async applyDamage(char: IStateTeam, base: IBaseDamage): Promise<void> {
+  private applyDamage(char: IStateTeam, base: IBaseDamage): IStateTeam {
     const newHp = char.character.stats.hp - base.dmg;
-    await this.stats.rooster.update(char.stats, {
-      stats: { ...char.character.stats, hp: newHp },
-    });
+    // await this.stats.rooster.update(char.stats, {
+    //   stats: { ...char.character.stats, hp: newHp },
+    // });
     char.character.stats.hp = newHp;
     console.log({ hp: char.character.stats.hp, char });
     const testmsg = `applied: [${base.dmg}] dmg to character: [${char.character._id}]`;
     Log.log('Attack', testmsg);
+    return char
   }
 
-  private async enemyLoop({
+  private enemyLoop({
     enemyTeam,
     playerTeam,
     actions,
@@ -253,52 +257,24 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     enemyTeam: IStateTeam[];
     playerTeam: IStateTeam[];
     actions: Omit<IActionEntity, '_id'>[];
-  }): Promise<void> {
-    // const targetCharacter = playerTeam[0]!;
-    //
-    // const baseAttackDto = new BaseAttackDto({ target: targetCharacter.character._id, type: ESkillsType.Attack });
-    // const promises = enemyTeam.map(async (e) => {
-    //   console.log('_@_@_@_@_@_@EACH ENEMY', e.character._id);
-    //   const actionValue = await this.attackAction(baseAttackDto, playerTeam[0]!, e);
-    //   actions.push({
-    //     character: e.character._id,
-    //     action: EAction.Attack,
-    //     target: targetCharacter.character._id,
-    //     value: -actionValue,
-    //   });
-    // });
-    //
-    // await Promise.all(promises);
+  }): void {
     const targetCharacter = playerTeam[0]!;
+
     const baseAttackDto = new BaseAttackDto({ target: targetCharacter.character._id, type: ESkillsType.Attack });
-
-    const promises = enemyTeam.map(async (e) => {
-      console.log('_@_@_@_@_@_@EACH ENEMY', e.character._id);
-      const actionValue = await this.attackAction(baseAttackDto, playerTeam[0]!, e);
-      return {
+    enemyTeam.forEach((e) => {
+      const { dmg, char } = this.attackAction(baseAttackDto, playerTeam[0]!, e);
+      actions.push({
         character: e.character._id,
-        actionValue,
-      };
+        action: EAction.Attack,
+        target: targetCharacter.character._id,
+        value: -dmg,
+      });
+      console.log("jjjjj", char)
     });
 
-    const results = await Promise.allSettled(promises);
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        console.log('-2-2-2-2-', result.value);
-        actions.push({
-          character: enemyTeam[index]!.character._id,
-          action: EAction.Attack,
-          target: targetCharacter.character._id,
-          value: -result.value.actionValue,
-        });
-        // Ensure to apply the damage in sequence
-        const newHp = enemyTeam[index]!.character.stats.hp - result.value.actionValue;
-        enemyTeam[index]!.character.stats.hp = newHp;
-        console.log('NEW HP', newHp);
-      } else {
-        console.error(`Failed to process enemy ${enemyTeam[index]!.character._id}:`, result.reason);
-      }
-    });
+    // await this.stats.rooster.update(charactee.stats, {
+    //   stats: { ...charactee.character.stats, hp: 2 },
+    // });
   }
 
   private async initializeFight(userId: string): Promise<IFullFight> {

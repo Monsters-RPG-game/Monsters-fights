@@ -1,5 +1,6 @@
 import { ESkillsType } from '../../../enums';
 import ControllerFactory from '../../../tools/abstract/controller';
+import Log from '../../../tools/logger';
 import BaseAttackController from '../baseAttack';
 import BaseAttackDto from '../baseAttack/dto';
 import Fight from '../model';
@@ -25,6 +26,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     userId: string,
   ): Promise<{ logs: Omit<IActionEntity, '_id'>[]; status: EFightStatus }> {
     const baseAttackDto = new BaseAttackDto({ target: data.target, type: ESkillsType.Attack });
+    Log.log('Attack', 'Got new attack:', data.target);
     return this.baseAttack.baseAttack(baseAttackDto, userId);
   }
 }

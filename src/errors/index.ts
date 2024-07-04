@@ -138,3 +138,13 @@ export class SkillsNotFound extends FullError {
     this.status = 404;
   }
 }
+
+export class SingleSkillNotFound extends FullError {
+  constructor() {
+    super('SingleSkillNotFound');
+    this.message = 'No single skill with provided id';
+    this.name = 'SingleSkillNotFound';
+    this.code = '027';
+    this.status = 404;
+  }
+}

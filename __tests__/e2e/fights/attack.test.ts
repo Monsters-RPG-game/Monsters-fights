@@ -114,28 +114,18 @@ describe('Fights', () => {
   });
 
   describe('Should pass', () => {
-    // it('Attack - hp of attacked enemy is 6', async () => {
-    //   await createController.createFight(testCreate);
-    //   try {
-    //     await attackController.attack(testAttack, testPlayer._id);
-    //     const state = await stateController.rooster.getAll(1);
-    //     const stats = await statsController.rooster.get(state[0]?.current.enemy[0]?.stats);
-    //     // const stats2 = await statsController.rooster.get(state[0]?.current.attacker[0]?.stats);
-    //     // console.log('\t-a-s-edasd',JSON.stringify(stats2,null,3))
-    //     expect(stats?.stats.hp).toBe(6);
-    //   } catch (err) {
-    //     expect(err).toBeUndefined();
-    //   }
-    // });
-
-    it('Attack - hp of player after two attacks is 3', async () => {
+    it('Attack - after 2 attacks from enemy: player hp 3, enemy hp 6', async () => {
+      /**
+       * First enemy deals 2 dmg, second enemy deals 5 dmg, based on stats
+       */
       await createController.createFight(testCreate);
       try {
         await attackController.attack(testAttack, testPlayer._id);
         const state = await stateController.rooster.getAll(1);
-        const stats = await statsController.rooster.get(state[0]?.current.attacker[0]?.stats);
-        console.log('sate', JSON.stringify(stats, null, 3));
-        expect(stats?.stats.hp).toBe(6);
+        const enemyStats = await statsController.rooster.get(state[0]?.current.enemy[0]?.stats);
+        const playerStats = await statsController.rooster.get(state[0]?.current.attacker[0]?.stats);
+        expect(enemyStats?.stats.hp).toBe(6);
+        expect(playerStats?.stats.hp).toBe(3);
       } catch (err) {
         expect(err).toBeUndefined();
       }

@@ -1,6 +1,6 @@
 import BaseAttackDto from './dto';
 import { EAction, EFightStatus, ESkillsType } from '../../../enums';
-import { IncorrectAttackTarget, SkillsNotFound, UserNotInFight } from '../../../errors';
+import { IncorrectAttackTarget, SingleSkillNotFound, SkillsNotFound, UserNotInFight } from '../../../errors';
 import ControllerFactory from '../../../tools/abstract/controller';
 import Log from '../../../tools/logger';
 import State from '../../../tools/state';
@@ -11,7 +11,7 @@ import StatsController from '../../stats/controller';
 import Fight from '../model';
 import Rooster from '../rooster';
 import { prepareFight, prepareStatsToSave } from '../utils';
-import type { IBaseAttackDto, IBaseDamage } from './types';
+import type { IBaseDamage } from './types';
 import type { EModules } from '../../../enums';
 import type { IActionEntity } from '../../actions/entity';
 import type { ILogEntity } from '../../log/entity';
@@ -56,11 +56,8 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     userId: string,
   ): Promise<{ logs: Omit<IActionEntity, '_id'>[]; status: EFightStatus; currentHp: number }> {
     const payload = new BaseAttackDto(data);
-    Log.log('Attack', 'Got new attack:', payload.target);
-    let fight = await State.redis.getFight(userId);
-    if (!fight) {
-      fight = await this.initializeFight(userId);
-    }
+
+    const fight = await this.getOrInitializeFight(userId);
 
     const actions: Omit<IActionEntity, '_id'>[] = [];
 
@@ -69,43 +66,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
     const player = playerTeam[0]!;
 
-    let target: IStateTeam | undefined;
-
-    /**
-     * actionValue is a return value of an action
-     * for example: attack return amount of damage, support return amount of healed hp
-     */
-
-    let actionValue: number = 0;
-    switch (payload.type) {
-      case ESkillsType.Attack:
-        target = fight.states.current.enemy.find((e) => e.character._id.toString() === payload.target);
-        if (!target) throw new IncorrectAttackTarget();
-        const { dmg } = this.attackAction(payload, target, player);
-        actionValue = dmg
-        actions.push({
-          character: userId,
-          action: EAction.Attack,
-          target: target.character._id,
-          value: -actionValue,
-        });
-        break;
-
-      case ESkillsType.Support:
-        target = fight.states.current.attacker.find((e) => e.character._id.toString() === payload.target);
-        if (!target) throw new IncorrectAttackTarget();
-        // actionValue = await this.supportAction(data, playerTeam);
-        actionValue = await this.supportAction(data, target);
-        actions.push({
-          character: userId,
-          action: EAction.Skill,
-          target: target.character._id,
-          value: actionValue,
-        });
-        break;
-      default:
-        Log.log('Fight', 'no action specified');
-    }
+    await this.handleActions(payload, userId, fight, actions, player);
 
     const aliveEnemies = this.checkAliveEnemies(enemyTeam);
     if (aliveEnemies.length === 0) {
@@ -115,7 +76,11 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       return { logs: actions, status: EFightStatus.Win, currentHp: 2 };
     }
 
-    this.enemyLoop({
+    /**
+     * Enemies turn, for now they all use only single attack
+     * this will change in future
+     */
+    await this.enemyLoop({
       playerTeam,
       enemyTeam,
       actions,
@@ -135,57 +100,166 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return { logs: actions, status: EFightStatus.Ongoing, currentHp: 100 };
   }
 
-  // private async attackAction(data: IBaseAttackDto, enemyTeam: IStateTeam[], playerTeam: IStateTeam[]): Promise<number> {
-  //   const player = playerTeam[0]!;
-  //   const target = enemyTeam.find((e) => e.character._id === data.target);
-  //   if (!target) throw new IncorrectAttackTarget();
-  //   const playermodifier = this.calculateModifiers(
-  //     data.externalPower,
-  //     player.character.stats.strength,
-  //     target.character.stats.strength,
-  //   );
-  //   const playerdamage = this.calculateBaseMeleeDamage(player.character.stats.strength, playermodifier);
-  //   console.log('----------', { mod: playermodifier, dmg: playerdamage, char: playerTeam[0]?.character._id });
-  //
-  //   await this.applyDamage(target, playerdamage!);
-  //   return playerdamage!.dmg;
-  // }
+  /**
+   * Check for a action type and call apropriate method
+   */
+  private async handleActions(
+    payload: BaseAttackDto,
+    userId: string,
+    fight: IFullFight,
+    actions: Omit<IActionEntity, '_id'>[],
+    player: IStateTeam,
+  ): Promise<void> {
+    switch (payload.type) {
+      case ESkillsType.Attack: {
+        const target = fight.states.current.enemy.find((e) => e.character._id.toString() === payload.target);
+        if (!target) throw new IncorrectAttackTarget();
 
-  private attackAction(data: IBaseAttackDto, enemy: IStateTeam, player: IStateTeam): { dmg: number, char: IStateTeam } {
+        const { dmg } = this.attackAction(payload, target, player);
+        actions.push({
+          character: userId,
+          action: EAction.Attack,
+          target: target.character._id,
+          value: -dmg,
+        });
+
+        await this.stats.rooster.update(target.stats, {
+          stats: { ...target.character.stats, hp: target?.character.stats.hp },
+        });
+        break;
+      }
+
+      case ESkillsType.Support: {
+        const target = fight.states.current.attacker.find((e) => e.character._id.toString() === payload.target);
+        if (!target) throw new IncorrectAttackTarget();
+
+        const { hp, char } = this.supportAction(payload, target);
+        actions.push({
+          character: userId,
+          action: EAction.Defence,
+          target: target.character._id,
+          value: hp,
+        });
+
+        await this.stats.rooster.update(char.stats, {
+          stats: { ...char.character.stats, hp: char?.character.stats.hp },
+        });
+        break;
+      }
+      default:
+        Log.log('Fight', 'no action specified');
+    }
+  }
+
+  private attackAction(data: BaseAttackDto, enemy: IStateTeam, player: IStateTeam): { dmg: number; char: IStateTeam } {
     const playermodifier = this.calculateModifiers(
-      data.externalPower,
       player.character.stats.strength,
       enemy.character.stats.strength,
+      data.externalPower,
     );
     const playerdamage = this.calculateBaseMeleeDamage(player.character.stats.strength, playermodifier);
-    console.log('----------', { mod: playermodifier, dmg: playerdamage, char: player.character._id, enemy });
 
     const char = this.applyDamage(enemy, playerdamage!);
-    console.log("@**@*#*@#*@#", char)
-    // return playerdamage!.dmg;
-    return { dmg: playerdamage!.dmg, char }
+    return { dmg: playerdamage!.dmg, char };
   }
-  private async supportAction(data: IBaseAttackDto, target: IStateTeam): Promise<number> {
-    // const player = playerTeam.find((e) => e.character._id === data.target);
-    // if (!player) throw new IncorrectAttackTarget();
+
+  private supportAction(data: BaseAttackDto, target: IStateTeam): { hp: number; char: IStateTeam } {
     const { skill } = data;
-    // change errro
-    if (!skill) throw new SkillsNotFound();
+    if (!skill) throw new SingleSkillNotFound();
+
     const newHp = target.character.stats.hp + skill.power;
-    await this.stats.rooster.update(target.stats, {
-      stats: { ...target.character.stats, hp: newHp },
-    });
     target.character.stats.hp = newHp;
     const testmsg = `Healed: [${skill.power}] hp of character: [${target.character._id}]`;
     Log.log('Support', testmsg);
-    return skill.power;
+    return { hp: newHp, char: target };
   }
 
-  private async finishFight(fight: IFullFight, actions: Omit<IActionEntity, '_id'>[], user: string): Promise<void> {
-    await this.updateDependencies(fight, actions);
+  /** for now we base our calculation on strength difference, later we will change this to some
+   * stat like str to defence/endurance etc
+   * itemPower for now is 1, later we can add equipment with some stats that will increase modifier to damage
+   */
+  private calculateModifiers(attackerStr: number, targetStr: number, itemPower: number): number {
+    let mod = 0;
+    if (attackerStr > targetStr) {
+      mod += attackerStr - targetStr;
+    }
+    mod += itemPower;
+    return mod;
+  }
 
-    await State.redis.removeFight(user);
-    await this.rooster.update(fight._id.toString(), { active: false });
+  /** base damage is sum of strength and modifier (which is difference between attacker and target strength)
+   * later we can another type of damage like ranged,magic etc
+   */
+  private calculateBaseMeleeDamage(str: number, modifier: number): IBaseDamage | undefined {
+    const dmg: IBaseDamage = {
+      dmg: str + modifier,
+    };
+    return dmg;
+  }
+
+  private applyDamage(char: IStateTeam, base: IBaseDamage): IStateTeam {
+    const newHp = char.character.stats.hp - base.dmg;
+    char.character.stats.hp = newHp;
+    const testmsg = `applied: [${base.dmg}] dmg to character: [${char.character._id}]`;
+    Log.log('Attack', testmsg);
+    return char;
+  }
+
+  private async enemyLoop({
+    enemyTeam,
+    playerTeam,
+    actions,
+  }: {
+    enemyTeam: IStateTeam[];
+    playerTeam: IStateTeam[];
+    actions: Omit<IActionEntity, '_id'>[];
+  }): Promise<void> {
+    const targetCharacter = playerTeam[0]!;
+
+    let finalChar: IStateTeam | undefined;
+    const baseAttackDto = new BaseAttackDto({ target: targetCharacter.character._id, type: ESkillsType.Attack });
+    enemyTeam.forEach((e) => {
+      const { dmg, char } = this.attackAction(baseAttackDto, playerTeam[0]!, e);
+      actions.push({
+        character: e.character._id,
+        action: EAction.Attack,
+        target: targetCharacter.character._id,
+        value: -dmg,
+      });
+      finalChar = char;
+      return finalChar;
+    });
+
+    if (!finalChar) throw new SkillsNotFound();
+    await this.stats.rooster.update(finalChar.stats, {
+      stats: { ...finalChar.character.stats, hp: finalChar?.character.stats.hp },
+    });
+  }
+  private async getOrInitializeFight(userId: string): Promise<IFullFight> {
+    let fight = await State.redis.getFight(userId);
+    if (!fight) {
+      fight = await this.initializeFight(userId);
+    }
+    return fight;
+  }
+  private async initializeFight(userId: string): Promise<IFullFight> {
+    const dbFight = await this.rooster.getActiveByUser(userId);
+    if (!dbFight) throw new UserNotInFight();
+    const dbState = await this.states.get(dbFight?.states);
+    const characters: string[] = [];
+
+    dbState?.current.attacker.forEach((a) => {
+      characters.push(a.character);
+    });
+
+    dbState?.current.enemy.forEach((a) => {
+      characters.push(a.character);
+    });
+
+    const dbStats = await this.stats.getMany({ characters });
+    const prepared = prepareFight(dbFight, dbState as IStateEntity, dbStats);
+    await State.redis.addFight(userId, prepared);
+    return prepared;
   }
 
   private async updateDependencies(fight: IFullFight, actions: Omit<IActionEntity, '_id'>[]): Promise<number> {
@@ -209,91 +283,16 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     await this.rooster.update(fight, { phase: nextPhase });
   }
 
-  /** for now we base our calculation on strength difference, later we will change this to some
-   * stat like str to defence/endurance etc
-   * itemPower for now is 1, later we can add equipment with some stats that will increase modifier to damage
-   */
-  private calculateModifiers(itemPower: number | undefined = 1, attackerStr: number, targetStr: number): number {
-    let mod = 0;
-    if (attackerStr > targetStr) {
-      mod += attackerStr - targetStr;
-    }
-    mod += itemPower;
-    return mod;
-  }
   private checkAliveEnemies(enemy: IStateTeam[]): IStateTeam[] {
     return enemy.filter((e) => {
       return e.character.stats.hp > 0;
     });
   }
 
-  /** base damage is sum of strength and modifier (which is difference between attacker and target strength)
-   * later we can another type of damage like ranged,magic etc
-   */
-  private calculateBaseMeleeDamage(str: number, modifier: number): IBaseDamage | undefined {
-    const dmg: IBaseDamage = {
-      dmg: str + modifier,
-    };
-    return dmg;
-  }
+  async finishFight(fight: IFullFight, actions: Omit<IActionEntity, '_id'>[], user: string): Promise<void> {
+    await this.updateDependencies(fight, actions);
 
-  private applyDamage(char: IStateTeam, base: IBaseDamage): IStateTeam {
-    const newHp = char.character.stats.hp - base.dmg;
-    // await this.stats.rooster.update(char.stats, {
-    //   stats: { ...char.character.stats, hp: newHp },
-    // });
-    char.character.stats.hp = newHp;
-    console.log({ hp: char.character.stats.hp, char });
-    const testmsg = `applied: [${base.dmg}] dmg to character: [${char.character._id}]`;
-    Log.log('Attack', testmsg);
-    return char
-  }
-
-  private enemyLoop({
-    enemyTeam,
-    playerTeam,
-    actions,
-  }: {
-    enemyTeam: IStateTeam[];
-    playerTeam: IStateTeam[];
-    actions: Omit<IActionEntity, '_id'>[];
-  }): void {
-    const targetCharacter = playerTeam[0]!;
-
-    const baseAttackDto = new BaseAttackDto({ target: targetCharacter.character._id, type: ESkillsType.Attack });
-    enemyTeam.forEach((e) => {
-      const { dmg, char } = this.attackAction(baseAttackDto, playerTeam[0]!, e);
-      actions.push({
-        character: e.character._id,
-        action: EAction.Attack,
-        target: targetCharacter.character._id,
-        value: -dmg,
-      });
-      console.log("jjjjj", char)
-    });
-
-    // await this.stats.rooster.update(charactee.stats, {
-    //   stats: { ...charactee.character.stats, hp: 2 },
-    // });
-  }
-
-  private async initializeFight(userId: string): Promise<IFullFight> {
-    const dbFight = await this.rooster.getActiveByUser(userId);
-    if (!dbFight) throw new UserNotInFight();
-    const dbState = await this.states.get(dbFight?.states);
-    const characters: string[] = [];
-
-    dbState?.current.attacker.forEach((a) => {
-      characters.push(a.character);
-    });
-
-    dbState?.current.enemy.forEach((a) => {
-      characters.push(a.character);
-    });
-
-    const dbStats = await this.stats.getMany({ characters });
-    const prepared = prepareFight(dbFight, dbState as IStateEntity, dbStats);
-    await State.redis.addFight(userId, prepared);
-    return prepared;
+    await State.redis.removeFight(user);
+    await this.rooster.update(fight._id.toString(), { active: false });
   }
 }

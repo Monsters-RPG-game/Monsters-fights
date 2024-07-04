@@ -4,6 +4,7 @@ import CreateFightDto from '../../../src/modules/fights/create/dto';
 import fakeData from '../../utils/fakeData.json';
 import type { ICreateFightDto } from '../../../src/modules/fights/create/types';
 import type { IFightEntity } from '../../../src/modules/fights/entity';
+import type { ISkillsEntity } from '../../../src/modules/skills/entity';
 import type { IStateTeam } from '../../../src/modules/state/types';
 import type { IStatsEntity } from '../../../src/modules/stats/entity';
 import type { IFightCharacterEntity } from '../../../src/types/characters';
@@ -11,6 +12,7 @@ import type { IFightCharacterEntity } from '../../../src/types/characters';
 describe('Fights - create', () => {
   const fakeFight = fakeData.fights[0] as IFightEntity;
   const fakeStats = fakeData.stats[0] as IStatsEntity;
+  const fakeSkills = fakeData.skills[0] as ISkillsEntity;
   const fightCharacter: IFightCharacterEntity = {
     _id: fakeFight.attacker,
     lvl: fakeStats.lvl,
@@ -19,6 +21,7 @@ describe('Fights - create', () => {
   const data: ICreateFightDto = {
     teams: [[], [{ character: fightCharacter, stats: fakeStats._id }]],
     attacker: fightCharacter,
+    skills: fakeSkills,
   };
 
   describe('Should throw', () => {

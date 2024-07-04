@@ -85,7 +85,13 @@ describe('Fights', () => {
   });
 
   describe('Should pass', () => {
-    it('Attack - hp of attacker is 32', async () => {
+    it('Attack - hp of attacker is 96 after 2 rounds', async () => {
+      /**
+       * In first round we deal damage and get damaged from 2 enemies
+       * In second round we use healing skill but enemies still attacks us with 2 attacks
+       * First enemy deals 2 dmg, second enemy deals 5 dmg
+       * Healing skill adds 100 hp
+       */
       await createController.createFight(testCreate);
       let error: IFullError | undefined = undefined;
       try {
@@ -94,7 +100,7 @@ describe('Fights', () => {
         const state = await stateController.rooster.getAll(1);
         const stats = await statsController.rooster.get(state[0]?.current.attacker[0]?.stats);
 
-        expect(stats?.stats.hp).toBe(7);
+        expect(stats?.stats.hp).toBe(96);
       } catch (err) {
         error = err as IFullError;
       }

@@ -1,8 +1,17 @@
 import Redis from '../../../src/connections/redis';
 import type { IFullFight } from '../../../src/modules/fights/types';
+import type { ISkillsEntity } from '../../../src/modules/skills/entity';
 
 export default class FakeRedis extends Redis {
   private _fights: IFullFight[] = [];
+  private _skills: ISkillsEntity[] = [];
+
+  get skills(): ISkillsEntity[] {
+    return this._skills;
+  }
+  protected set skills(value: ISkillsEntity[]) {
+    this._skills = value;
+  }
 
   get fights(): IFullFight[] {
     return this._fights;
@@ -16,6 +25,20 @@ export default class FakeRedis extends Redis {
     return new Promise((resolve) => {
       this.fights.push(fight);
       resolve();
+    });
+  }
+
+  override async addCachedSkills(skills: ISkillsEntity, _userId: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.skills.push(skills);
+      resolve();
+    });
+  }
+
+  override async getSkills(target: string): Promise<ISkillsEntity | undefined> {
+    return new Promise((resolve) => {
+      const data = this.skills.find((f) => f.owner === target);
+      resolve(data);
     });
   }
 

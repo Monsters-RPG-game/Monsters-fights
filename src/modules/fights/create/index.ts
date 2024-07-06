@@ -3,6 +3,7 @@ import { UserAlreadyInFight } from '../../../errors';
 import ControllerFactory from '../../../tools/abstract/controller';
 import State from '../../../tools/state';
 import LogsController from '../../log/controller';
+import SkillsController from '../../skills/controller';
 import StatesController from '../../state/controller';
 import StatsController from '../../stats/controller';
 import CreateStatsDto from '../../stats/create/dto';
@@ -17,7 +18,7 @@ import type { Omit } from 'yargs';
 
 export default class Controller extends ControllerFactory<EModules.Fights> {
   private readonly _state: StatesController;
-
+  private readonly _skills: SkillsController;
   private readonly _log: LogsController;
   private readonly _stats: StatsController;
 
@@ -26,6 +27,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     this._state = new StatesController();
     this._log = new LogsController();
     this._stats = new StatsController();
+    this._skills = new SkillsController();
   }
 
   private get state(): StatesController {
@@ -38,6 +40,10 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
   private get logs(): LogsController {
     return this._log;
+  }
+
+  public get skills(): SkillsController {
+    return this._skills;
   }
 
   async createFight(data: ICreateFightDto): Promise<void> {
@@ -74,6 +80,11 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     const states = await this.state.add({
       initialized: preparedState,
       current: preparedState,
+    });
+
+    await this.skills.add({
+      owner: payload.skills.owner,
+      singleSkills: payload.skills.singleSkills,
     });
     const log = await this.logs.addBasic();
     const now = new Date().toISOString();

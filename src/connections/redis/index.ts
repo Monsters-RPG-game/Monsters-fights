@@ -4,6 +4,7 @@ import * as enums from '../../enums';
 import { type IFullFight } from '../../modules/fights/types';
 import getConfig from '../../tools/configLoader';
 import Log from '../../tools/logger';
+import type { ISkillsEntity } from '../../modules/skills/entity';
 import type { IFullError } from '../../types';
 import type { RedisClientType } from 'redis';
 
@@ -41,6 +42,11 @@ export default class Redis {
     return this.setExpirationDate(`${enums.ERedisTargets.Fights}:${target}`, 60 * 30);
   }
 
+  async addCachedSkills(skills: ISkillsEntity, userId: string): Promise<void> {
+    await this.rooster.addToHash(`${enums.ERedisTargets.CachedSkills}:${userId}`, userId, JSON.stringify(skills));
+    await this.rooster.setExpirationDate(`${enums.ERedisTargets.CachedSkills}:${userId}`, 60000);
+  }
+
   async updateFight(target: string, fight: IFullFight): Promise<void> {
     await this.rooster.addToHash(`${enums.ERedisTargets.Fights}:${target}`, target, JSON.stringify(fight));
     return this.setExpirationDate(`${enums.ERedisTargets.Fights}:${target}`, 60 * 30);
@@ -49,6 +55,14 @@ export default class Redis {
   async getFight(target: string): Promise<IFullFight | undefined> {
     const data = await this.rooster.getFromHash({ target: `${enums.ERedisTargets.Fights}:${target}`, value: target });
     return data ? (JSON.parse(data) as IFullFight) : undefined;
+  }
+
+  async getSkills(target: string): Promise<ISkillsEntity | undefined> {
+    const data = await this.rooster.getFromHash({
+      target: `${enums.ERedisTargets.CachedSkills}:${target}`,
+      value: target,
+    });
+    return data ? (JSON.parse(data) as ISkillsEntity) : undefined;
   }
 
   async removeFight(target: string): Promise<void> {

@@ -37,6 +37,8 @@ export default class Router {
         return this.fights.leave(payload.payload, payload.user);
       case enums.EFightsTargets.GetFights:
         return this.fights.getFights(payload.payload, payload.user);
+      case enums.EFightsTargets.UseSkill:
+        return this.fights.useSkill(payload.payload, payload.user);
       case enums.EFightsTargets.GetLogs:
         return this.fights.getLogs(payload.payload, payload.user);
       default:

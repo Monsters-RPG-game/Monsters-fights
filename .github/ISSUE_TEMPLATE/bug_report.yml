@@ -28,8 +28,8 @@ body:
       multiple: false
       label: Does this problem occurs while you are logged in ?
       options:
-        - "✨ Yes"
-        - "📝 No"
+        - "Yes"
+        - "No"
     validations:
       required: true
 

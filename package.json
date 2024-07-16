@@ -34,7 +34,7 @@
     "amqplib": "0.10.4",
     "chalk": "4.1.2",
     "mongoose": "8.5.1",
-    "node": "22.4.0",
+    "node": "22.4.1",
     "redis": "^4.6.13",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^5.0.0"

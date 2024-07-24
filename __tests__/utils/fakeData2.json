@@ -155,14 +155,14 @@
           "name": "65edc7bcefd4ecbb6ca8d673",
           "power": 3,
           "type": "attack",
-          "target": "enemy"
+          "target": "enemy",
         },
         {
           "_id": "6672c3bde7d0917cf910fd5d",
           "name": "65edc7bcefd4ecbb6ca8d670",
-          "power": 100,
+          "power": 1,
           "type": "support",
-          "target": "teammate"
+          "target": "teammate",
         }
       ]
     }

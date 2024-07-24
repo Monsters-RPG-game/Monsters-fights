@@ -4,6 +4,8 @@ import type { IFightEntity } from '../../../../src/modules/fights/entity';
 import type Fight from '../../../../src/modules/fights/model';
 import type { ILogEntity } from '../../../../src/modules/log/entity';
 import type Log from '../../../../src/modules/log/model';
+import type { ISkillsEntity } from '../../../../src/modules/skills/entity';
+import type Skills from '../../../../src/modules/skills/model';
 import type { IStateEntity } from '../../../../src/modules/state/entity';
 import type State from '../../../../src/modules/state/model';
 import type { IStatsEntity } from '../../../../src/modules/stats/entity';
@@ -20,6 +22,7 @@ export interface IFakeState {
   [EFakeData.Logs]: IFakeParam<ILogEntity>;
   [EFakeData.States]: IFakeParam<IStateEntity>;
   [EFakeData.Stats]: IFakeParam<IStatsEntity>;
+  [EFakeData.Skills]: IFakeParam<ISkillsEntity>;
 }
 
 export interface IFakeModel {
@@ -28,6 +31,7 @@ export interface IFakeModel {
   [EFakeData.Logs]: typeof Log;
   [EFakeData.States]: typeof State;
   [EFakeData.Stats]: typeof Stats;
+  [EFakeData.Skills]: typeof Skills;
 }
 
 export type IAbstractBody<T> = {

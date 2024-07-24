@@ -5,4 +5,5 @@ export enum EDbCollections {
   State = 'state',
   Action = 'action',
   Stats = 'stats',
+  Skills = 'skills',
 }

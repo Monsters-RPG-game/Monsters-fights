@@ -7,3 +7,4 @@ export * from './db';
 export * from './redis';
 export * from './actions';
 export * from './status';
+export * from './skills';

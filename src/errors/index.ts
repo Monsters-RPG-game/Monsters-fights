@@ -128,3 +128,23 @@ export class IncorrectAttackTarget extends FullError {
     this.status = 400;
   }
 }
+
+export class SkillsNotFound extends FullError {
+  constructor() {
+    super('SkillsNotFound');
+    this.message = 'No skills with provided id';
+    this.name = 'SkillsNotFound';
+    this.code = '026';
+    this.status = 404;
+  }
+}
+
+export class SingleSkillNotFound extends FullError {
+  constructor() {
+    super('SingleSkillNotFound');
+    this.message = 'No single skill with provided id';
+    this.name = 'SingleSkillNotFound';
+    this.code = '027';
+    this.status = 404;
+  }
+}

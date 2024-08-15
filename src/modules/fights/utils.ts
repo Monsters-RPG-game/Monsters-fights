@@ -5,7 +5,10 @@ import type { IFightState } from '../state/types';
 import type { IStatsEntity } from '../stats/entity';
 
 /**
- * Fill additional data for dbFight in order to make fully working fight
+ * Fill additional data for dbFight in order to make fully working fight.
+ * @param dbFight
+ * @param dbState
+ * @param dbStats
  */
 export const prepareFight = (dbFight: IFightEntity, dbState: IStateEntity, dbStats: IStatsEntity[]): IFullFight => {
   const states: IFightState = {
@@ -42,7 +45,8 @@ export const prepareFight = (dbFight: IFightEntity, dbState: IStateEntity, dbSta
 };
 
 /**
- * Prepare fight data to update it in database
+ * Prepare fight data to update it in database.
+ * @param states
  */
 export const prepareStatsToSave = (states: IFightState): IStateEntity => {
   return {

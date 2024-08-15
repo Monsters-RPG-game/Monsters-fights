@@ -46,6 +46,19 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return this._skills;
   }
 
+  private async getStats(team: IStateTeam[]): Promise<{ id: string; character: string }[]> {
+    return Promise.all(
+      team.map(async (ch) => {
+        const payload = new CreateStatsDto({
+          lvl: ch.character.lvl,
+          character: ch.character._id,
+          stats: ch.character.stats,
+        });
+
+        return { id: await this.stats.add(payload), character: ch.character._id };
+      }),
+    );
+  }
   async createFight(data: ICreateFightDto): Promise<void> {
     const payload = new CreateFightDto(data);
 
@@ -109,20 +122,6 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       },
       _id: fightId,
     });
-  }
-
-  private async getStats(team: IStateTeam[]): Promise<{ id: string; character: string }[]> {
-    return Promise.all(
-      team.map(async (ch) => {
-        const payload = new CreateStatsDto({
-          lvl: ch.character.lvl,
-          character: ch.character._id,
-          stats: ch.character.stats,
-        });
-
-        return { id: await this.stats.add(payload), character: ch.character._id };
-      }),
-    );
   }
 
   private async prepareState(team: IStateBodyTeam): Promise<ICreateStateBodyTeam> {

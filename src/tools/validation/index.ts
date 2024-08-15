@@ -20,7 +20,7 @@ export default class Validation {
 
   /**
    * Validate if element is typeof string
-   * Require param: any
+   * Require param: any.
    */
   isDefined(): this {
     const { v, name } = this;
@@ -31,7 +31,7 @@ export default class Validation {
 
   /**
    * Validate if element is typeof string
-   * Require param: any
+   * Require param: any.
    */
   isString(): this {
     const { v, name } = this;
@@ -44,7 +44,7 @@ export default class Validation {
 
   /**
    * Validate if element is typeof number
-   * Require param: any
+   * Require param: any.
    */
   isNumber(): this {
     const { v, name } = this;
@@ -55,7 +55,7 @@ export default class Validation {
 
   /**
    * Validate if element is typeof mongoose.ObjectId
-   * Require param: string
+   * Require param: string.
    */
   isObjectId(): this {
     const { v, name } = this;
@@ -70,7 +70,7 @@ export default class Validation {
 
   /**
    * Validate if element is boolean
-   * Require param: any
+   * Require param: any.
    */
   isBoolean(): this {
     const { v, name } = this;
@@ -84,7 +84,7 @@ export default class Validation {
 
   /**
    * Validate if element is typeof array
-   * Require param: array of strings
+   * Require param: array of strings.
    */
   isArray(): this {
     const { v, name } = this;
@@ -97,7 +97,7 @@ export default class Validation {
 
   /**
    * Validate if element has children, which are typeof string
-   * Require param: array of strings
+   * Require param: array of strings.
    */
   isStringArray(): this {
     const { v, name } = this;
@@ -115,7 +115,7 @@ export default class Validation {
 
   /**
    * Validate if element has children, which are typeof number
-   * Require param: array of numbers
+   * Require param: array of numbers.
    */
   isNumberArray(): this {
     const { v, name } = this;
@@ -133,7 +133,7 @@ export default class Validation {
 
   /**
    * Validate if element has children, which are typeof objectId
-   * Require param: array of numbers
+   * Require param: array of numbers.
    */
   isObjectIdArray(): this {
     const { v, name } = this;
@@ -151,7 +151,9 @@ export default class Validation {
 
   /**
    * Validate if element's length is smaller than x and bigger than y
-   * Require param: string
+   * Require param: string.
+   * @param max
+   * @param min
    */
   hasLength(max: number, min?: number): this {
     const { v, name } = this;
@@ -168,7 +170,9 @@ export default class Validation {
 
   /**
    * Validate if element is smaller than x and bigger than y
-   * Require param: number
+   * Require param: number.
+   * @param max
+   * @param min
    */
   isBetween(max: number, min?: number): this {
     const { v, name } = this;
@@ -185,7 +189,8 @@ export default class Validation {
 
   /**
    * Validate if element is inside enum
-   * Require param: any
+   * Require param: any.
+   * @param enumTarget
    */
   isPartOfEnum(enumTarget: Record<string, string>): this {
     const { v, name } = this;
@@ -199,7 +204,9 @@ export default class Validation {
 
   /**
    * Validate if element is compatible with regex
-   * Require param: any
+   * Require param: any.
+   * @param regex
+   * @param error
    */
   isRegexCompatible(regex: RegExp, error: string): this {
     const { v } = this;
@@ -212,7 +219,8 @@ export default class Validation {
 
   /**
    * Validate if element has more children than x
-   * Require param: array
+   * Require param: array.
+   * @param amount
    */
   minElements(amount: number): this {
     const { v, name } = this;
@@ -225,7 +233,8 @@ export default class Validation {
 
   /**
    * Validate if element has fewer children than x
-   * Require param: array of strings
+   * Require param: array of strings.
+   * @param amount
    */
   maxElements(amount: number): this {
     const { v, name } = this;

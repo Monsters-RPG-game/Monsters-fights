@@ -24,6 +24,20 @@ export default class Redis {
     return this._rooster;
   }
 
+  async getFight(target: string): Promise<IFullFight | undefined> {
+    const data = await this.rooster.getFromHash({ target: `${enums.ERedisTargets.Fights}:${target}`, value: target });
+    return data ? (JSON.parse(data) as IFullFight) : undefined;
+  }
+  async getSkills(target: string): Promise<ISkillsEntity | undefined> {
+    const data = await this.rooster.getFromHash({
+      target: `${enums.ERedisTargets.CachedSkills}:${target}`,
+      value: target,
+    });
+    return data ? (JSON.parse(data) as ISkillsEntity) : undefined;
+  }
+  private async setExpirationDate(target: enums.ERedisTargets | string, ttl: number): Promise<void> {
+    await this.rooster.setExpirationDate(target, ttl);
+  }
   async init(): Promise<void> {
     this.initClient();
     this.rooster.init(this.client!);
@@ -52,25 +66,8 @@ export default class Redis {
     return this.setExpirationDate(`${enums.ERedisTargets.Fights}:${target}`, 60 * 30);
   }
 
-  async getFight(target: string): Promise<IFullFight | undefined> {
-    const data = await this.rooster.getFromHash({ target: `${enums.ERedisTargets.Fights}:${target}`, value: target });
-    return data ? (JSON.parse(data) as IFullFight) : undefined;
-  }
-
-  async getSkills(target: string): Promise<ISkillsEntity | undefined> {
-    const data = await this.rooster.getFromHash({
-      target: `${enums.ERedisTargets.CachedSkills}:${target}`,
-      value: target,
-    });
-    return data ? (JSON.parse(data) as ISkillsEntity) : undefined;
-  }
-
   async removeFight(target: string): Promise<void> {
     return this.rooster.removeFromHash(`${enums.ERedisTargets.Fights}:${target}`, target);
-  }
-
-  private async setExpirationDate(target: enums.ERedisTargets | string, ttl: number): Promise<void> {
-    await this.rooster.setExpirationDate(target, ttl);
   }
 
   private initClient(): void {

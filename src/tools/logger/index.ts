@@ -3,9 +3,16 @@ import errLogger from './logger';
 import * as enums from '../../enums/index';
 
 /**
- * Log passed data and save it in local files
+ * Log passed data and save it in local files.
  */
 export default class Log {
+  private static getDate(): string {
+    const date = new Date();
+    const h = date.getHours().toString().length === 1 ? `0${date.getHours()}:` : `${date.getHours()}:`;
+    const m = date.getMinutes().toString().length === 1 ? `0${date.getMinutes()}:` : `${date.getMinutes()}:`;
+    const s = date.getSeconds().toString().length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`;
+    return `${h}${m}${s}`;
+  }
   static error(target: string, ...messages: unknown[]): void {
     messages.forEach((m) => {
       Log.buildLog(() => chalk.red(`Log.ERROR: ${target}`), enums.ELogTypes.Error, m);
@@ -56,14 +63,6 @@ export default class Log {
       default:
         errLogger.info(mess);
     }
-  }
-
-  private static getDate(): string {
-    const date = new Date();
-    const h = date.getHours().toString().length === 1 ? `0${date.getHours()}:` : `${date.getHours()}:`;
-    const m = date.getMinutes().toString().length === 1 ? `0${date.getMinutes()}:` : `${date.getMinutes()}:`;
-    const s = date.getSeconds().toString().length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`;
-    return `${h}${m}${s}`;
   }
 
   private static toString(message: unknown): string {

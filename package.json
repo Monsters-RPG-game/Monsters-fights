@@ -13,7 +13,7 @@
     "start:test": "cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true tsx src/main.ts",
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
-    "lint": "cross-env NODE_ENV=development eslint . --ext .ts --fix",
+    "lint": "cross-env NODE_ENV=development eslint -c eslint.config.mjs . --fix",
     "listErrors": "node_modules/.bin/tsc --skipLibCheck",
     "lintStaged": "npx lint-staged",
     "test": "echo 'If you want to run all the tests, please use makefile'",
@@ -40,20 +40,24 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.1.1",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.9.0",
     "@jest/globals": "^29.3.1",
     "@types/amqplib": "^0.10.0",
     "@types/node": "^22.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.1.1",
-    "@typescript-eslint/parser": "7.18.0",
+    "@typescript-eslint/eslint-plugin": "8.0.1",
+    "@typescript-eslint/parser": "8.0.1",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "eslint": "8.57.0",
+    "eslint": "9.9.0",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-check-file": "^2.8.0",
+    "eslint-plugin-check-file": "2.8.0",
     "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-jest": "28.6.0",
+    "eslint-plugin-jest": "28.8.0",
+    "eslint-plugin-jsdoc": "^50.0.0",
     "eslint-plugin-prettier": "5.2.1",
-    "eslint-plugin-sort-class-members": "^1.20.0",
+    "eslint-plugin-sort-class-members": "1.20.0",
     "jest": "^29.5.0",
     "jest-config": "^29.5.0",
     "mongodb-memory-server": "10.0.0",
@@ -63,5 +67,10 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.7.2",
     "typescript": "5.5.4"
+  },
+  "overrides": {
+    "eslint-plugin-import": {
+      "eslint": "^9"
+    }
   }
 }

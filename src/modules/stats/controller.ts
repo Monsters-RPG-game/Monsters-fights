@@ -11,11 +11,10 @@ export default class Stats extends ControllerFactory<EModules.Stats> {
     super(new Rooster(StatsModel));
   }
 
-  add(data: ICreateStatsDto): Promise<string> {
-    return this.rooster.add(data);
-  }
-
   getMany(params: IGetStatsDto): Promise<IStatsEntity[]> {
     return this.rooster.getMany(params);
+  }
+  add(data: ICreateStatsDto): Promise<string> {
+    return this.rooster.add(data);
   }
 }

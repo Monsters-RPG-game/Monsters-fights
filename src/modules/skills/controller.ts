@@ -10,11 +10,10 @@ export default class Skills extends ControllerFactory<EModules.Skills> {
     super(new Rooster(SkillsModel));
   }
 
-  add(data: ICreateSkillsDto): Promise<string> {
-    return this.rooster.add(data);
-  }
-
   getMany(ids: string[]): Promise<ISkillsEntity[]> {
     return this.rooster.getMany(ids);
+  }
+  add(data: ICreateSkillsDto): Promise<string> {
+    return this.rooster.add(data);
   }
 }

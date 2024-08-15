@@ -6,7 +6,7 @@ import testDevConfig from '../../config/testConfig.json';
 import type * as types from '../types';
 
 /**
- * Load config from json files
+ * Load config from json files.
  */
 export default function getConfig(): types.IConfigInterface {
   switch (process.env.NODE_ENV) {

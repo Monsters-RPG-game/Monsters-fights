@@ -35,6 +35,14 @@ export default class UserHandler extends HandlerFactory<EModules.Fights> {
     return this._attackController;
   }
 
+  async getFights(payload: unknown, user: ILocalUser): Promise<void> {
+    const data = await this.getController.get(payload as IGetFightDto);
+    return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
+  }
+  async getLogs(payload: unknown, user: ILocalUser): Promise<void> {
+    const data = await this.getLogsController.get(payload as IGetLogsDto);
+    return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
+  }
   private get getLogsController(): GetLogsController {
     return this._getLogsController;
   }
@@ -68,16 +76,6 @@ export default class UserHandler extends HandlerFactory<EModules.Fights> {
 
   async leave(_payload: unknown, user: ILocalUser): Promise<void> {
     const data = await this.leaveController.leaveFight(user.userId);
-    return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
-  }
-
-  async getLogs(payload: unknown, user: ILocalUser): Promise<void> {
-    const data = await this.getLogsController.get(payload as IGetLogsDto);
-    return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
-  }
-
-  async getFights(payload: unknown, user: ILocalUser): Promise<void> {
-    const data = await this.getController.get(payload as IGetFightDto);
     return State.broker.send(user.tempId, data, enums.EMessageTypes.Send);
   }
 }

@@ -37,11 +37,23 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return this._actions;
   }
 
-  async get(data: IGetFightDto): Promise<IFightReport[]> {
-    const payload = new GetFightDto(data);
-    return payload.active ? this.getActive(payload) : this.getInactive(payload);
-  }
+  private async getActive(payload: GetFightDto): Promise<IFightReport[]> {
+    const fight = (await State.redis.getFight(payload.owner)) as IFullFight;
 
+    if (!fight) {
+      const dbFight = await this.rooster.getActiveByUser(payload.owner);
+      if (!dbFight) throw new UserNotInFight();
+      const dbState = await this.state.get(dbFight?.states.toString());
+      const logs = await this.prepareLogs(dbFight.log);
+
+      return [{ ...dbFight, _id: dbFight._id.toString(), states: dbState as IStateEntity, log: logs }];
+    }
+
+    const dbState = await this.state.get(fight?.states._id);
+    const logs = await this.prepareLogs(fight.log);
+
+    return [{ ...fight, _id: fight._id.toString(), states: dbState as IStateEntity, log: logs }];
+  }
   private async getInactive(payload: GetFightDto): Promise<IFightReport[]> {
     const prepared: IFightReport[] = [];
 
@@ -61,23 +73,9 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
     return prepared;
   }
-
-  private async getActive(payload: GetFightDto): Promise<IFightReport[]> {
-    const fight = (await State.redis.getFight(payload.owner)) as IFullFight;
-
-    if (!fight) {
-      const dbFight = await this.rooster.getActiveByUser(payload.owner);
-      if (!dbFight) throw new UserNotInFight();
-      const dbState = await this.state.get(dbFight?.states.toString());
-      const logs = await this.prepareLogs(dbFight.log);
-
-      return [{ ...dbFight, _id: dbFight._id.toString(), states: dbState as IStateEntity, log: logs }];
-    }
-
-    const dbState = await this.state.get(fight?.states._id);
-    const logs = await this.prepareLogs(fight.log);
-
-    return [{ ...fight, _id: fight._id.toString(), states: dbState as IStateEntity, log: logs }];
+  async get(data: IGetFightDto): Promise<IFightReport[]> {
+    const payload = new GetFightDto(data);
+    return payload.active ? this.getActive(payload) : this.getInactive(payload);
   }
 
   private async prepareLogs(id: string): Promise<IFullFightLogs> {

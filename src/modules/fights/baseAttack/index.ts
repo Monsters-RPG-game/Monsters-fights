@@ -51,6 +51,13 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return this._actions;
   }
 
+  private async getOrInitializeFight(userId: string): Promise<IFullFight> {
+    let fight = await State.redis.getFight(userId);
+    if (!fight) {
+      fight = await this.initializeFight(userId);
+    }
+    return fight;
+  }
   async baseAttack(
     data: BaseAttackDto,
     userId: string,
@@ -78,7 +85,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
 
     /**
      * Enemies turn, for now they all use only single attack
-     * this will change in future
+     * this will change in future.
      */
     await this.enemyLoop({
       playerTeam,
@@ -101,7 +108,12 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
   }
 
   /**
-   * Check for a action type and call apropriate method
+   * Check for a action type and call apropriate method.
+   * @param payload
+   * @param userId
+   * @param fight
+   * @param actions
+   * @param player
    */
   private async handleActions(
     payload: BaseAttackDto,
@@ -174,9 +186,12 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return { hp: newHp, char: target };
   }
 
-  /** for now we base our calculation on strength difference, later we will change this to some
+  /** For now we base our calculation on strength difference, later we will change this to some
    * stat like str to defence/endurance etc
-   * itemPower for now is 1, later we can add equipment with some stats that will increase modifier to damage
+   * itemPower for now is 1, later we can add equipment with some stats that will increase modifier to damage.
+   * @param attackerStr
+   * @param targetStr
+   * @param itemPower
    */
   private calculateModifiers(attackerStr: number, targetStr: number, itemPower: number): number {
     let mod = 0;
@@ -187,8 +202,10 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
     return mod;
   }
 
-  /** base damage is sum of strength and modifier (which is difference between attacker and target strength)
-   * later we can another type of damage like ranged,magic etc
+  /** Base damage is sum of strength and modifier (which is difference between attacker and target strength)
+   * later we can another type of damage like ranged,magic etc.
+   * @param str
+   * @param modifier
    */
   private calculateBaseMeleeDamage(str: number, modifier: number): IBaseDamage | undefined {
     const dmg: IBaseDamage = {
@@ -235,13 +252,7 @@ export default class Controller extends ControllerFactory<EModules.Fights> {
       stats: { ...finalChar.character.stats, hp: finalChar?.character.stats.hp },
     });
   }
-  private async getOrInitializeFight(userId: string): Promise<IFullFight> {
-    let fight = await State.redis.getFight(userId);
-    if (!fight) {
-      fight = await this.initializeFight(userId);
-    }
-    return fight;
-  }
+
   private async initializeFight(userId: string): Promise<IFullFight> {
     const dbFight = await this.rooster.getActiveByUser(userId);
     if (!dbFight) throw new UserNotInFight();

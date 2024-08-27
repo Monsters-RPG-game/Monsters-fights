@@ -33,7 +33,7 @@
   "dependencies": {
     "amqplib": "0.10.4",
     "chalk": "4.1.2",
-    "mongoose": "8.5.3",
+    "mongoose": "8.5.4",
     "node": "22.6.0",
     "redis": "^4.6.13",
     "winston": "^3.8.2",
@@ -50,7 +50,7 @@
     "@typescript-eslint/parser": "8.2.0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "eslint": "9.9.0",
+    "eslint": "9.9.1",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-check-file": "2.8.0",
     "eslint-plugin-import": "2.29.1",
